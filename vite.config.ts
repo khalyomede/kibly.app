@@ -3,12 +3,16 @@ import solidPlugin from 'vite-plugin-solid';
 import devtools from 'solid-devtools/vite';
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from "vite-plugin-pwa";
+import { createHtmlPlugin } from 'vite-plugin-html';
 
 export default defineConfig({
     plugins: [
         devtools(),
         tailwindcss(),
         solidPlugin(),
+        createHtmlPlugin({
+            minify: true, // enables minification in production
+        }),
         VitePWA({
             registerType: 'autoUpdate',
             workbox: {
@@ -79,5 +83,10 @@ export default defineConfig({
     },
     build: {
         target: 'esnext',
+        minify: 'terser', // or 'esbuild' (but terser gives more control)
+        terserOptions: {
+            compress: true,
+            mangle: true,
+        },
     },
 });
