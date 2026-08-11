@@ -19,6 +19,7 @@ render(
         <Router>
             <Route path="/" component={Home} />
             <Route path="/play" component={Play} />
+            <Route path="*404" component={Home} />
         </Router>
     ),
     root!

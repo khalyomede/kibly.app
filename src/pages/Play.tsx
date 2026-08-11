@@ -1,7 +1,8 @@
-import { For, Index, Match, Switch, type Component } from 'solid-js';
+import { For, Index, Match, Show, Switch, createSignal, type Component } from 'solid-js';
 import { createLocalStore, createLocalSignal } from "../store";
 import * as z from "zod";
-import { RefreshCw, RefreshCcw, Delete, CheckCheck } from "lucide-solid";
+import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
+import Logo from '../components/Logo';
 
 type Lang = "en" | "es" | "fr";
 type Difficulty = "easy" | "medium" | "hard";
@@ -14,6 +15,9 @@ interface Letter {
 };
 
 const App: Component = () => {
+    const [settingsOpen, setSettingsOpen] = createSignal(false);
+    const langLabels: Record<Lang, string> = { en: "English", es: "Español", fr: "Français" };
+    const difficultyLabels: Record<Difficulty, string> = { easy: "Easy", medium: "Medium", hard: "Hard" };
     const difficulties: Array<Difficulty> = ["easy", "medium", "hard"];
     const letterStates: Array<LetterState> = ["to-guess", "guessed", "good", "bad", "misplaced"];
     const difficultiesDefinition = z.enum(difficulties);
@@ -386,18 +390,20 @@ const App: Component = () => {
     return (
         <div class="h-dvh flex flex-col bg-orange-50">
             {/* Header */}
-            <div class="shrink px-2 py-4 flex items-center">
-                <h1 class="grow">Word Guess</h1>
-                <select class="me-2" onchange={(event) => saveDifficulty(event.target.value)}>
-                    <Index each={difficulties}>
-                        {(difficulty) => <option selected={currentDifficulty() === difficulty()}>{difficulty()}</option>}
-                    </Index>
-                </select>
-                <select onchange={(event) => saveLang(event.target.value)}>
-                    <Index each={langs}>
-                        {(lang) => <option selected={currentLang() === lang()}>{lang()}</option>}
-                    </Index>
-                </select>
+            <div class="shrink px-3 py-6 flex items-center gap-2">
+                {/* Spacer to keep the logo optically centered against the cog */}
+                <div class="w-9 shrink-0" aria-hidden="true"></div>
+                <div class="grow flex justify-center">
+                    <Logo width={180} />
+                </div>
+                <button
+                    type="button"
+                    onClick={() => setSettingsOpen(true)}
+                    aria-label="Open settings"
+                    class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 text-slate-600 bg-white/70"
+                >
+                    <Settings width="18" height="18" />
+                </button>
             </div>
             {/* Grid */}
             <div class="grow flex items-center">
@@ -492,6 +498,74 @@ const App: Component = () => {
                     </div>
                 </Match>
             </Switch>
+
+            {/* Settings sheet */}
+            <Show when={settingsOpen()}>
+                <div class="fixed inset-0 z-50 flex flex-col justify-end" role="dialog" aria-modal="true" aria-label="Settings">
+                    <div class="sheet-backdrop absolute inset-0 bg-slate-900/40" onClick={() => setSettingsOpen(false)}></div>
+                    <div class="sheet-panel relative bg-orange-50 rounded-t-3xl border-t-2 border-slate-200 px-5 pt-3 pb-8 shadow-2xl">
+                        <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300"></div>
+                        <div class="flex items-center mb-6">
+                            <h2 class="grow text-lg text-slate-700 tracking-wide">Settings</h2>
+                            <button
+                                type="button"
+                                onClick={() => setSettingsOpen(false)}
+                                aria-label="Close settings"
+                                class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 border-2 border-slate-200"
+                            >
+                                <X width="18" height="18" />
+                            </button>
+                        </div>
+
+                        {/* Language */}
+                        <div class="mb-6">
+                            <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">Language</div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <For each={langs}>
+                                    {(lang) => <button
+                                        type="button"
+                                        onClick={() => saveLang(lang)}
+                                        classList={{
+                                            "px-2": true,
+                                            "py-2": true,
+                                            "rounded-xl": true,
+                                            "border-2": true,
+                                            "text-sm": true,
+                                            "tracking-wide": true,
+                                            "border-green-800 bg-green-600 text-green-50": currentLang() === lang,
+                                            "border-slate-300 bg-white/70 text-slate-600": currentLang() !== lang,
+                                        }}
+                                    >{langLabels[lang]}</button>}
+                                </For>
+                            </div>
+                        </div>
+
+                        {/* Difficulty */}
+                        <div>
+                            <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">Difficulty</div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <For each={difficulties}>
+                                    {(difficulty) => <button
+                                        type="button"
+                                        onClick={() => saveDifficulty(difficulty)}
+                                        classList={{
+                                            "px-2": true,
+                                            "py-2": true,
+                                            "rounded-xl": true,
+                                            "border-2": true,
+                                            "text-sm": true,
+                                            "tracking-wide": true,
+                                            "border-green-800 bg-green-600 text-green-50": currentDifficulty() === difficulty,
+                                            "border-slate-300 bg-white/70 text-slate-600": currentDifficulty() !== difficulty,
+                                        }}
+                                    >{difficultyLabels[difficulty]}</button>}
+                                </For>
+                            </div>
+                        </div>
+                        {/* Future controls (theme, history, ...) can be added here as new sections */}
+                    </div>
+                </div>
+            </Show>
         </div >
     );
 };
