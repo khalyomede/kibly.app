@@ -394,7 +394,7 @@ const App: Component = () => {
                 {/* Spacer to keep the logo optically centered against the cog */}
                 <div class="w-9 shrink-0" aria-hidden="true"></div>
                 <div class="grow flex justify-center">
-                    <Logo width={180} />
+                    <Logo width={180} height={56} />
                 </div>
                 <button
                     type="button"
