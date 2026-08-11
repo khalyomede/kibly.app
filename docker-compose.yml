@@ -32,3 +32,13 @@ services:
     working_dir: /home/root/app
     volumes:
       - .:/home/root/app
+
+  php:
+    image: php:8.5.9-alpine
+    entrypoint: php
+    tty: true
+    working_dir: /var/www/html
+    ports:
+      - 80:80
+    volumes:
+      - .:/var/www/html
