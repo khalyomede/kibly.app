@@ -388,184 +388,190 @@ const App: Component = () => {
         .filter((letter: Letter): boolean => letter.state === "guessed").length < wordToGuess().length;
 
     return (
-        <div class="h-dvh flex flex-col bg-orange-50">
-            {/* Header */}
-            <div class="shrink px-3 py-6 flex items-center gap-2">
-                {/* Spacer to keep the logo optically centered against the cog */}
-                <div class="w-9 shrink-0" aria-hidden="true"></div>
-                <div class="grow flex justify-center">
-                    <Logo width={180} height={56} />
+        <div class="h-dvh bg-orange-50 py-4 md:py-16">
+            <div class="max-w-xl mx-auto flex flex-col gap-8 md:gap-8">
+                {/* Header */}
+                <div class="shrink px-3 py-6 flex items-center gap-2 md:gap-12">
+                    {/* Spacer to keep the logo optically centered against the cog */}
+                    <div class="w-9 shrink-0" aria-hidden="true"></div>
+                    <div class="grow flex justify-center">
+                        <Logo class="w-50 h-auto md:w-100" />
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setSettingsOpen(true)}
+                        aria-label="Open settings"
+                        class="p-2 md:p-4 shrink-0 flex items-center justify-center rounded-xl md:rounded-3xl border-2 md:border-3 border-slate-300 text-slate-600 bg-white/70"
+                    >
+                        <Settings class="w-7 h-7 md:w-9 md:h-9" />
+                    </button>
                 </div>
-                <button
-                    type="button"
-                    onClick={() => setSettingsOpen(true)}
-                    aria-label="Open settings"
-                    class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 text-slate-600 bg-white/70"
-                >
-                    <Settings width="18" height="18" />
-                </button>
-            </div>
-            {/* Grid */}
-            <div class="grow flex items-center">
-                {/* <div> */}
-                <div classList={{
-                    "grid": true,
-                    "grid-rows-5": true,
-                    "gap-2": true,
-                    "p-2": true,
-                    "grow": true,
-                    "grid-cols-5": currentDifficulty() === "easy",
-                    "grid-cols-6": currentDifficulty() === "medium",
-                    "grid-cols-7": currentDifficulty() === "hard"
-                }}>
-                    <For each={lettersToGuess[currentLang()][currentDifficulty()]}>
-                        {(guessedLetter) => <span classList={{
-                            "aspect-square": true,
-                            "border": true,
-                            "rounded-xl": true,
-                            "flex": true,
-                            "items-center": true,
-                            "justify-center": true,
-                            "text-3xl": true,
-                            "text-gray-600": true,
-                            "border-gray-500": true,
-                            "border-2": true,
-                            "bg-slate-50": ["to-guess", "guessed"].includes(guessedLetter.state),
-                            "bg-amber-200": guessedLetter.state === "misplaced",
-                            "bg-slate-400": guessedLetter.state === "bad",
-                            "bg-green-200": guessedLetter.state === "good",
-                        }}>{guessedLetter.value}</span>}
-                    </For>
+                {/* Grid */}
+                <div class="grow flex items-center">
+                    {/* <div> */}
+                    <div classList={{
+                        "grid": true,
+                        "grid-rows-5": true,
+                        "gap-2": true,
+                        "p-2": true,
+                        "grow": true,
+                        "grid-cols-5": currentDifficulty() === "easy",
+                        "grid-cols-6": currentDifficulty() === "medium",
+                        "grid-cols-7": currentDifficulty() === "hard"
+                    }}>
+                        <For each={lettersToGuess[currentLang()][currentDifficulty()]}>
+                            {(guessedLetter) => <span classList={{
+                                "aspect-square": true,
+                                "border": true,
+                                "rounded-xl": true,
+                                "md:rounded-3xl": true,
+                                "flex": true,
+                                "items-center": true,
+                                "justify-center": true,
+                                "text-3xl": true,
+                                "text-gray-600": true,
+                                "border-gray-500": true,
+                                "border-2": true,
+                                "md:border-3": true,
+                                "bg-slate-50": ["to-guess", "guessed"].includes(guessedLetter.state),
+                                "bg-amber-200": guessedLetter.state === "misplaced",
+                                "bg-slate-400": guessedLetter.state === "bad",
+                                "bg-green-200": guessedLetter.state === "good",
+                            }}>{guessedLetter.value}</span>}
+                        </For>
+                    </div>
                 </div>
-            </div>
-            {/* Replay/Abort */}
-            <div class="flex justify-center">
+                {/* Replay/Abort */}
+                <div class="flex justify-center">
+                    <Switch>
+                        <Match when={gameFinished()}>
+                            <button onClick={onClickReplay} class="px-6 py-1 md:px-8 md:py-4 uppercase rounded-xl md:rounded-xl md:text-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:border-3">
+                                <span>Replay</span>
+                                <RefreshCcw class="w-6 h-6" />
+                            </button>
+                        </Match>
+                        <Match when={!gameFinished()}>
+                            <button onClick={onClickChange} class="px-6 py-2 md:px-8 md:py-4 uppercase rounded-xl md:rounded-xl md:text-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:border-3">
+                                <span>Change {gameFinished()}</span>
+                                <RefreshCw class="w-4 h-4 md:w-6 md:h-6" />
+                            </button>
+                        </Match>
+                    </Switch>
+                </div>
+                {/* Keyboard/Win-loose text */}
                 <Switch>
-                    <Match when={gameFinished()}>
-                        <button onClick={onClickReplay} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2">
-                            <span>Replay</span>
-                            <RefreshCcw width="16" height="16" />
-                        </button>
-                    </Match>
                     <Match when={!gameFinished()}>
-                        <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2">
-                            <span>Change {gameFinished()}</span>
-                            <RefreshCw width="16" height="16" />
-                        </button>
+                        <div class="shrink grid grid-rows-3 grid-cols-10 gap-2 px-2 pb-8">
+                            <Index each={keyboard[currentLang()]}>
+                                {(key) => <button onclick={() => onKeyboardClick(key())} classList={{
+                                    "flex": true,
+                                    "align-center": true,
+                                    "justify-center": true,
+                                    "items-center": true,
+                                    "border": true,
+                                    "rounded-lg": true,
+                                    "md:text-xl": true,
+                                    "border-2": true,
+                                    "md:border-3": true,
+                                    "border-slate-500": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
+                                    "bg-slate-50": !bannedLetters().includes(key()),
+                                    "bg-slate-400": bannedLetters().includes(key()),
+                                    "text-slate-600": !["DELETE", "ENTER", "HINT"].includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
+                                    "text-slate-300": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()),
+                                    "text-lg": true,
+                                    "aspect-square": key() !== "HINT",
+                                    "col-span-2": key() === "HINT"
+                                }}>
+                                    <Switch fallback={key()}>
+                                        <Match when={key() === "HINT"}>hint</Match>
+                                        <Match when={key() === "DELETE"}><Delete width="18" height="18" /></Match>
+                                        <Match when={key() === "ENTER"}><CheckCheck width="18" height="18" /></Match>
+                                    </Switch>
+                                </button>}
+                            </Index>
+                        </div>
+                    </Match>
+                    <Match when={gameLost()}>
+                        <div class="grow flex items-center justify-center gap-2 text-xl">
+                            <span class="tracking-wide md:text-3xl">Word was:</span>
+                            <span class="tracking-widest">{wordToGuess()}</span>
+                        </div>
+                    </Match>
+                    <Match when={gameWon()}>
+                        <div class="grow flex items-center justify-center gap-2 text-xl">
+                            <span class="tracking-wide md:text-3xl">You won!</span>
+                        </div>
                     </Match>
                 </Switch>
+
+                {/* Settings sheet */}
+                <Show when={settingsOpen()}>
+                    <div class="fixed inset-0 z-50 flex flex-col justify-end" role="dialog" aria-modal="true" aria-label="Settings">
+                        <div class="sheet-backdrop absolute inset-0 bg-slate-900/40" onClick={() => setSettingsOpen(false)}></div>
+                        <div class="sheet-panel relative bg-orange-50 rounded-t-3xl border-t-2 border-slate-200 px-5 pt-3 pb-8 shadow-2xl">
+                            <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300"></div>
+                            <div class="flex items-center mb-6">
+                                <h2 class="grow text-lg text-slate-700 tracking-wide">Settings</h2>
+                                <button
+                                    type="button"
+                                    onClick={() => setSettingsOpen(false)}
+                                    aria-label="Close settings"
+                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 border-2 border-slate-200"
+                                >
+                                    <X width="18" height="18" />
+                                </button>
+                            </div>
+
+                            {/* Language */}
+                            <div class="mb-6">
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">Language</div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <For each={langs}>
+                                        {(lang) => <button
+                                            type="button"
+                                            onClick={() => saveLang(lang)}
+                                            classList={{
+                                                "px-2": true,
+                                                "py-2": true,
+                                                "rounded-xl": true,
+                                                "border-2": true,
+                                                "text-sm": true,
+                                                "tracking-wide": true,
+                                                "border-green-800 bg-green-600 text-green-50": currentLang() === lang,
+                                                "border-slate-300 bg-white/70 text-slate-600": currentLang() !== lang,
+                                            }}
+                                        >{langLabels[lang]}</button>}
+                                    </For>
+                                </div>
+                            </div>
+
+                            {/* Difficulty */}
+                            <div>
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">Difficulty</div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <For each={difficulties}>
+                                        {(difficulty) => <button
+                                            type="button"
+                                            onClick={() => saveDifficulty(difficulty)}
+                                            classList={{
+                                                "px-2": true,
+                                                "py-2": true,
+                                                "rounded-xl": true,
+                                                "border-2": true,
+                                                "text-sm": true,
+                                                "tracking-wide": true,
+                                                "border-green-800 bg-green-600 text-green-50": currentDifficulty() === difficulty,
+                                                "border-slate-300 bg-white/70 text-slate-600": currentDifficulty() !== difficulty,
+                                            }}
+                                        >{difficultyLabels[difficulty]}</button>}
+                                    </For>
+                                </div>
+                            </div>
+                            {/* Future controls (theme, history, ...) can be added here as new sections */}
+                        </div>
+                    </div>
+                </Show>
             </div>
-            {/* Keyboard/Win-loose text */}
-            <Switch>
-                <Match when={!gameFinished()}>
-                    <div class="shrink grid grid-rows-3 grid-cols-10 gap-2 px-2 py-8">
-                        <Index each={keyboard[currentLang()]}>
-                            {(key) => <button onclick={() => onKeyboardClick(key())} classList={{
-                                "flex": true,
-                                "align-center": true,
-                                "justify-center": true,
-                                "items-center": true,
-                                "border": true,
-                                "rounded-lg": true,
-                                "border-2": true,
-                                "border-slate-500": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
-                                "bg-slate-50": !bannedLetters().includes(key()),
-                                "bg-slate-400": bannedLetters().includes(key()),
-                                "text-slate-600": !["DELETE", "ENTER", "HINT"].includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
-                                "text-slate-300": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()),
-                                "text-lg": true,
-                                "aspect-square": key() !== "HINT",
-                                "col-span-2": key() === "HINT"
-                            }}>
-                                <Switch fallback={key()}>
-                                    <Match when={key() === "HINT"}>hint</Match>
-                                    <Match when={key() === "DELETE"}><Delete width="18" height="18" /></Match>
-                                    <Match when={key() === "ENTER"}><CheckCheck width="18" height="18" /></Match>
-                                </Switch>
-                            </button>}
-                        </Index>
-                    </div>
-                </Match>
-                <Match when={gameLost()}>
-                    <div class="grow flex items-center justify-center gap-2 text-xl">
-                        <span class="tracking-wide">Word was:</span>
-                        <span class="tracking-widest">{wordToGuess()}</span>
-                    </div>
-                </Match>
-                <Match when={gameWon()}>
-                    <div class="grow flex items-center justify-center gap-2 text-xl">
-                        <span class="tracking-wide">You won!</span>
-                    </div>
-                </Match>
-            </Switch>
-
-            {/* Settings sheet */}
-            <Show when={settingsOpen()}>
-                <div class="fixed inset-0 z-50 flex flex-col justify-end" role="dialog" aria-modal="true" aria-label="Settings">
-                    <div class="sheet-backdrop absolute inset-0 bg-slate-900/40" onClick={() => setSettingsOpen(false)}></div>
-                    <div class="sheet-panel relative bg-orange-50 rounded-t-3xl border-t-2 border-slate-200 px-5 pt-3 pb-8 shadow-2xl">
-                        <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300"></div>
-                        <div class="flex items-center mb-6">
-                            <h2 class="grow text-lg text-slate-700 tracking-wide">Settings</h2>
-                            <button
-                                type="button"
-                                onClick={() => setSettingsOpen(false)}
-                                aria-label="Close settings"
-                                class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 border-2 border-slate-200"
-                            >
-                                <X width="18" height="18" />
-                            </button>
-                        </div>
-
-                        {/* Language */}
-                        <div class="mb-6">
-                            <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">Language</div>
-                            <div class="grid grid-cols-3 gap-2">
-                                <For each={langs}>
-                                    {(lang) => <button
-                                        type="button"
-                                        onClick={() => saveLang(lang)}
-                                        classList={{
-                                            "px-2": true,
-                                            "py-2": true,
-                                            "rounded-xl": true,
-                                            "border-2": true,
-                                            "text-sm": true,
-                                            "tracking-wide": true,
-                                            "border-green-800 bg-green-600 text-green-50": currentLang() === lang,
-                                            "border-slate-300 bg-white/70 text-slate-600": currentLang() !== lang,
-                                        }}
-                                    >{langLabels[lang]}</button>}
-                                </For>
-                            </div>
-                        </div>
-
-                        {/* Difficulty */}
-                        <div>
-                            <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">Difficulty</div>
-                            <div class="grid grid-cols-3 gap-2">
-                                <For each={difficulties}>
-                                    {(difficulty) => <button
-                                        type="button"
-                                        onClick={() => saveDifficulty(difficulty)}
-                                        classList={{
-                                            "px-2": true,
-                                            "py-2": true,
-                                            "rounded-xl": true,
-                                            "border-2": true,
-                                            "text-sm": true,
-                                            "tracking-wide": true,
-                                            "border-green-800 bg-green-600 text-green-50": currentDifficulty() === difficulty,
-                                            "border-slate-300 bg-white/70 text-slate-600": currentDifficulty() !== difficulty,
-                                        }}
-                                    >{difficultyLabels[difficulty]}</button>}
-                                </For>
-                            </div>
-                        </div>
-                        {/* Future controls (theme, history, ...) can be added here as new sections */}
-                    </div>
-                </div>
-            </Show>
         </div >
     );
 };

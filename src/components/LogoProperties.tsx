@@ -1,6 +1,5 @@
 interface LogoProperties {
-    width: number;
-    height: number;
+    class: string;
 };
 
 export default LogoProperties;
