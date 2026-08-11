@@ -1,0 +1,34 @@
+services:
+  npm:
+    image: node:26.5.0-alpine
+    entrypoint: npm
+    user: node
+    working_dir: /home/node/app
+    volumes:
+      - .:/home/node/app
+    ports:
+      - 3000:3000
+
+  npx:
+    image: node:26.5.0-alpine
+    entrypoint: npx
+    user: node
+    working_dir: /home/node/app
+    volumes:
+      - .:/home/node/app
+
+  ffmpeg:
+    build: ./docker/ffmpeg
+    entrypoint: ffmpeg
+    user: root
+    working_dir: /home/root/app
+    volumes:
+      - .:/home/root/app
+
+  magick:
+    build: ./docker/imagemagick
+    entrypoint: magick
+    user: root
+    working_dir: /home/root/app
+    volumes:
+      - .:/home/root/app
