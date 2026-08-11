@@ -1,0 +1,26 @@
+[[redirects]]
+# Prevent 404 when direct access to "/search" (for example) on production URL
+from = "/*"
+to = "/index.html"
+status = 200
+
+# Put a 1-year cache time for all icons
+[[headers]]
+for = "/icons/*"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/*.js"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/*.css"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/*"
+[headers.values]
+Cache-Control = "no-cache"
