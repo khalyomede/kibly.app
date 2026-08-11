@@ -27,73 +27,19 @@ const App: Component = () => {
     const langsDefinition = z.enum(langs);
     const dictionnary = {
         "en": {
-            "easy": [
-                "APPLE",
-                "BREAD",
-                "CHAIR",
-                "SMILE",
-                "TIGER",
-            ],
-            "medium": [
-                "PLANET",
-                "GARDEN",
-                "WINDOW",
-                "CASTLE",
-                "ANIMAL",
-            ],
-            "hard": [
-                "MORNING",
-                "PICTURE",
-                "CHICKEN",
-                "KITCHEN",
-                "BLANKET",
-            ],
+            "easy": ["APPLE", "BREAD", "CHAIR", "SMILE", "TIGER"],
+            "medium": ["PLANET", "GARDEN", "WINDOW", "CASTLE", "ANIMAL"],
+            "hard": ["MORNING", "PICTURE", "CHICKEN", "KITCHEN", "BLANKET"],
         },
         "es": {
-            "easy": [
-                "PERRO", // dog
-                "PLAYA", // beach
-                "CAMPO", // field
-                "REINA", // queen
-                "COCHE", // car
-            ],
-            "medium": [
-                "BOSQUE", // forest
-                "CAMINO", // path
-                "ZAPATO", // shoe
-                "PUERTA", // door
-                "CAMISA", // shirt
-            ],
-            "hard": [
-                "VENTANA", // window
-                "CABALLO", // horse
-                "FAMILIA", // family
-                "NARANJA", // orange
-                "PLANETA", // planet
-            ],
+            "easy": ["PERRO", "PLAYA", "CAMPO", "REINA", "COCHE"],
+            "medium": ["BOSQUE", "CAMINO", "ZAPATO", "PUERTA", "CAMISA"],
+            "hard": ["VENTANA", "CABALLO", "FAMILIA", "NARANJA", "PLANETA"],
         },
         "fr": {
-            "easy": [
-                "ARBRE", // tree
-                "LIVRE", // book
-                "TABLE",
-                "PLAGE", // beach
-                "NEIGE", // snow
-            ],
-            "medium": [
-                "MAISON", // house
-                "CHEMIN", // path
-                "BATEAU", // boat
-                "ORANGE",
-                "OISEAU", // bird
-            ],
-            "hard": [
-                "VOITURE", // car
-                "VILLAGE",
-                "FROMAGE", // cheese
-                "POISSON", // fish
-                "CHEMISE", // shirt
-            ],
+            "easy": ["ARBRE", "LIVRE", "TABLE", "PLAGE", "NEIGE"],
+            "medium": ["MAISON", "CHEMIN", "BATEAU", "ORANGE", "OISEAU"],
+            "hard": ["VOITURE", "VILLAGE", "FROMAGE", "POISSON", "CHEMISE"],
         },
     };
 
@@ -388,31 +334,31 @@ const App: Component = () => {
         .filter((letter: Letter): boolean => letter.state === "guessed").length < wordToGuess().length;
 
     return (
-        <div class="h-dvh bg-orange-50 py-4 md:py-16">
-            <div class="max-w-xl mx-auto flex flex-col gap-8 md:gap-8">
+        <div class="min-h-dvh bg-orange-50 flex justify-center">
+            <div class="h-dvh flex flex-col w-full md:max-w-2xl md:mx-auto md:border-x md:border-slate-200 lg:max-w-3xl">
                 {/* Header */}
-                <div class="shrink px-3 py-6 flex items-center gap-2 md:gap-12">
+                <div class="shrink px-3 py-6 flex items-center gap-2 md:py-8">
                     {/* Spacer to keep the logo optically centered against the cog */}
-                    <div class="w-9 shrink-0" aria-hidden="true"></div>
+                    <div class="w-9 shrink-0 md:w-11" aria-hidden="true"></div>
                     <div class="grow flex justify-center">
-                        <Logo class="w-50 h-auto md:w-100" />
+                        <Logo width={180} height={56} />
                     </div>
                     <button
                         type="button"
                         onClick={() => setSettingsOpen(true)}
                         aria-label="Open settings"
-                        class="p-2 md:p-4 shrink-0 flex items-center justify-center rounded-xl md:rounded-3xl border-2 md:border-3 border-slate-300 text-slate-600 bg-white/70"
+                        class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 text-slate-600 bg-white/70 md:w-11 md:h-11"
                     >
-                        <Settings class="w-7 h-7 md:w-9 md:h-9" />
+                        <Settings width="18" height="18" />
                     </button>
                 </div>
                 {/* Grid */}
-                <div class="grow flex items-center">
-                    {/* <div> */}
+                <div class="grow flex items-center px-2 md:px-6">
                     <div classList={{
                         "grid": true,
                         "grid-rows-5": true,
                         "gap-2": true,
+                        "md:gap-3": true,
                         "p-2": true,
                         "grow": true,
                         "grid-cols-5": currentDifficulty() === "easy",
@@ -424,15 +370,16 @@ const App: Component = () => {
                                 "aspect-square": true,
                                 "border": true,
                                 "rounded-xl": true,
-                                "md:rounded-3xl": true,
+                                "md:rounded-2xl": true,
                                 "flex": true,
                                 "items-center": true,
                                 "justify-center": true,
                                 "text-3xl": true,
+                                "md:text-4xl": true,
+                                "lg:text-5xl": true,
                                 "text-gray-600": true,
                                 "border-gray-500": true,
                                 "border-2": true,
-                                "md:border-3": true,
                                 "bg-slate-50": ["to-guess", "guessed"].includes(guessedLetter.state),
                                 "bg-amber-200": guessedLetter.state === "misplaced",
                                 "bg-slate-400": guessedLetter.state === "bad",
@@ -445,15 +392,15 @@ const App: Component = () => {
                 <div class="flex justify-center">
                     <Switch>
                         <Match when={gameFinished()}>
-                            <button onClick={onClickReplay} class="px-6 py-1 md:px-8 md:py-4 uppercase rounded-xl md:rounded-xl md:text-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:border-3">
+                            <button onClick={onClickReplay} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg">
                                 <span>Replay</span>
-                                <RefreshCcw class="w-6 h-6" />
+                                <RefreshCcw width="16" height="16" />
                             </button>
                         </Match>
                         <Match when={!gameFinished()}>
-                            <button onClick={onClickChange} class="px-6 py-2 md:px-8 md:py-4 uppercase rounded-xl md:rounded-xl md:text-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:border-3">
+                            <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg">
                                 <span>Change {gameFinished()}</span>
-                                <RefreshCw class="w-4 h-4 md:w-6 md:h-6" />
+                                <RefreshCw width="16" height="16" />
                             </button>
                         </Match>
                     </Switch>
@@ -461,7 +408,7 @@ const App: Component = () => {
                 {/* Keyboard/Win-loose text */}
                 <Switch>
                     <Match when={!gameFinished()}>
-                        <div class="shrink grid grid-rows-3 grid-cols-10 gap-2 px-2 pb-8">
+                        <div class="shrink grid grid-rows-3 grid-cols-10 gap-2 px-2 py-8 md:gap-3 md:px-6 md:py-10">
                             <Index each={keyboard[currentLang()]}>
                                 {(key) => <button onclick={() => onKeyboardClick(key())} classList={{
                                     "flex": true,
@@ -470,15 +417,14 @@ const App: Component = () => {
                                     "items-center": true,
                                     "border": true,
                                     "rounded-lg": true,
-                                    "md:text-xl": true,
                                     "border-2": true,
-                                    "md:border-3": true,
                                     "border-slate-500": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
                                     "bg-slate-50": !bannedLetters().includes(key()),
                                     "bg-slate-400": bannedLetters().includes(key()),
                                     "text-slate-600": !["DELETE", "ENTER", "HINT"].includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
                                     "text-slate-300": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()),
                                     "text-lg": true,
+                                    "md:text-xl": true,
                                     "aspect-square": key() !== "HINT",
                                     "col-span-2": key() === "HINT"
                                 }}>
@@ -492,26 +438,26 @@ const App: Component = () => {
                         </div>
                     </Match>
                     <Match when={gameLost()}>
-                        <div class="grow flex items-center justify-center gap-2 text-xl">
-                            <span class="tracking-wide md:text-3xl">Word was:</span>
+                        <div class="grow flex items-center justify-center gap-2 text-xl md:text-2xl">
+                            <span class="tracking-wide">Word was:</span>
                             <span class="tracking-widest">{wordToGuess()}</span>
                         </div>
                     </Match>
                     <Match when={gameWon()}>
-                        <div class="grow flex items-center justify-center gap-2 text-xl">
-                            <span class="tracking-wide md:text-3xl">You won!</span>
+                        <div class="grow flex items-center justify-center gap-2 text-xl md:text-2xl">
+                            <span class="tracking-wide">You won!</span>
                         </div>
                     </Match>
                 </Switch>
 
                 {/* Settings sheet */}
                 <Show when={settingsOpen()}>
-                    <div class="fixed inset-0 z-50 flex flex-col justify-end" role="dialog" aria-modal="true" aria-label="Settings">
+                    <div class="fixed inset-0 z-50 flex flex-col justify-end md:items-center md:justify-center" role="dialog" aria-modal="true" aria-label="Settings">
                         <div class="sheet-backdrop absolute inset-0 bg-slate-900/40" onClick={() => setSettingsOpen(false)}></div>
-                        <div class="sheet-panel relative bg-orange-50 rounded-t-3xl border-t-2 border-slate-200 px-5 pt-3 pb-8 shadow-2xl">
-                            <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300"></div>
+                        <div class="sheet-panel relative bg-orange-50 rounded-t-3xl border-t-2 border-slate-200 px-5 pt-3 pb-8 shadow-2xl md:w-full md:max-w-md md:rounded-3xl md:border md:border-t-2 md:px-8 md:py-8">
+                            <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300 md:hidden"></div>
                             <div class="flex items-center mb-6">
-                                <h2 class="grow text-lg text-slate-700 tracking-wide">Settings</h2>
+                                <h2 class="grow text-lg text-slate-700 tracking-wide md:text-xl">Settings</h2>
                                 <button
                                     type="button"
                                     onClick={() => setSettingsOpen(false)}
@@ -572,7 +518,7 @@ const App: Component = () => {
                     </div>
                 </Show>
             </div>
-        </div >
+        </div>
     );
 };
 
