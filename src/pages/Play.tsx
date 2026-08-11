@@ -335,13 +335,13 @@ const App: Component = () => {
 
     return (
         <div class="min-h-dvh bg-orange-50 flex justify-center">
-            <div class="h-dvh flex flex-col w-full md:max-w-2xl md:mx-auto md:border-x md:border-slate-200 lg:max-w-3xl">
+            <div class="h-dvh flex flex-col w-full md:max-w-2xl md:mx-auto lg:max-w-md gap-6 md:gap-4 lg:gap-2">
                 {/* Header */}
-                <div class="shrink px-3 py-6 flex items-center gap-2 md:py-8">
+                <div class="shrink px-3 py-6 flex items-center gap-8 md:py-8">
                     {/* Spacer to keep the logo optically centered against the cog */}
                     <div class="w-9 shrink-0 md:w-11" aria-hidden="true"></div>
                     <div class="grow flex justify-center">
-                        <Logo width={180} height={56} />
+                        <Logo class="w-100 h-auto" />
                     </div>
                     <button
                         type="button"
@@ -353,12 +353,13 @@ const App: Component = () => {
                     </button>
                 </div>
                 {/* Grid */}
-                <div class="grow flex items-center px-2 md:px-6">
+                <div class="flex items-center px-2 md:px-6">
                     <div classList={{
                         "grid": true,
                         "grid-rows-5": true,
                         "gap-2": true,
                         "md:gap-3": true,
+                        "lg:gap-2": true,
                         "p-2": true,
                         "grow": true,
                         "grid-cols-5": currentDifficulty() === "easy",
@@ -376,7 +377,7 @@ const App: Component = () => {
                                 "justify-center": true,
                                 "text-3xl": true,
                                 "md:text-4xl": true,
-                                "lg:text-5xl": true,
+                                "lg:text-2xl": true,
                                 "text-gray-600": true,
                                 "border-gray-500": true,
                                 "border-2": true,
@@ -389,7 +390,7 @@ const App: Component = () => {
                     </div>
                 </div>
                 {/* Replay/Abort */}
-                <div class="flex justify-center">
+                <div class="flex justify-center mb-4 md:my-8 lg:my-6">
                     <Switch>
                         <Match when={gameFinished()}>
                             <button onClick={onClickReplay} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg">
@@ -398,7 +399,7 @@ const App: Component = () => {
                             </button>
                         </Match>
                         <Match when={!gameFinished()}>
-                            <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg">
+                            <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm">
                                 <span>Change {gameFinished()}</span>
                                 <RefreshCw width="16" height="16" />
                             </button>
@@ -408,7 +409,7 @@ const App: Component = () => {
                 {/* Keyboard/Win-loose text */}
                 <Switch>
                     <Match when={!gameFinished()}>
-                        <div class="shrink grid grid-rows-3 grid-cols-10 gap-2 px-2 py-8 md:gap-3 md:px-6 md:py-10">
+                        <div class="shrink grid grid-rows-3 grid-cols-10 gap-2 px-2 md:gap-3 lg:gap-1 md:px-6">
                             <Index each={keyboard[currentLang()]}>
                                 {(key) => <button onclick={() => onKeyboardClick(key())} classList={{
                                     "flex": true,
@@ -438,13 +439,13 @@ const App: Component = () => {
                         </div>
                     </Match>
                     <Match when={gameLost()}>
-                        <div class="grow flex items-center justify-center gap-2 text-xl md:text-2xl">
+                        <div class="flex items-center justify-center gap-2 text-xl md:text-2xl">
                             <span class="tracking-wide">Word was:</span>
                             <span class="tracking-widest">{wordToGuess()}</span>
                         </div>
                     </Match>
                     <Match when={gameWon()}>
-                        <div class="grow flex items-center justify-center gap-2 text-xl md:text-2xl">
+                        <div class="flex items-center justify-center gap-2 text-xl md:text-2xl">
                             <span class="tracking-wide">You won!</span>
                         </div>
                     </Match>
