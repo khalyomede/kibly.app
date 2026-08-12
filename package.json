@@ -11,6 +11,7 @@
     },
     "license": "MIT",
     "devDependencies": {
+        "@sentry/solid": "10.70.0",
         "@solidjs/router": "1.0.0",
         "@tailwindcss/vite": "4.3.3",
         "lucide-solid": "1.28.0",
