@@ -38,6 +38,8 @@ You can deploy the `dist` folder to any static host provider (netlify, surge, no
 
 ## Re-format images
 
+### Logo (horizontal)
+
 ```bash
 docker compose run --rm magick src/images/kibby-logo.png -define webp:lossless=true src/images/kibby-logo.webp
 
@@ -50,4 +52,20 @@ docker compose run --rm magick src/images/kibby-logo.png -resize 390x src/images
 docker compose run --rm magick src/images/kibby-logo.png -resize 769x src/images/kibby-logo-tablet.png
 docker compose run --rm magick src/images/kibby-logo.png -resize 1024x src/images/kibby-logo-laptop.png
 docker compose run --rm magick src/images/kibby-logo.png -resize 1440x src/images/kibby-logo-desktop.png
+```
+
+### Icon (favicon, app icon)
+
+```bash
+docker compose run --rm magick public/icons/kibby-icon.png -resize 1024x1024 public/icons/kibby-icon-1024.png
+docker compose run --rm magick public/icons/kibby-icon.png -resize 512x512 public/icons/kibby-icon-512.png
+docker compose run --rm magick public/icons/kibby-icon.png -resize 192x192 public/icons/kibby-icon-192.png
+
+docker compose run --rm magick public/icons/kibby-maskable-icon.png -resize 1024x1024 public/icons/kibby-maskable-icon-1024.png
+docker compose run --rm magick public/icons/kibby-maskable-icon.png -resize 512x512 public/icons/kibby-maskable-icon-512.png
+docker compose run --rm magick public/icons/kibby-maskable-icon.png -resize 192x192 public/icons/kibby-maskable-icon-192.png
+
+docker compose run --rm magick public/icons/kibby-maskable-duo-tone-icon.png -resize 1024x1024 public/icons/kibby-maskable-duo-tone-icon-1024.png
+docker compose run --rm magick public/icons/kibby-maskable-duo-tone-icon.png -resize 512x512 public/icons/kibby-maskable-duo-tone-icon-512.png
+docker compose run --rm magick public/icons/kibby-maskable-duo-tone-icon.png -resize 192x192 public/icons/kibby-maskable-duo-tone-icon-192.png
 ```

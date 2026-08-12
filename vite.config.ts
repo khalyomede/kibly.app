@@ -57,22 +57,40 @@ export default defineConfig({
                 ],
                 icons: [
                     {
-                        src: `/icons/kibby-icon-1024.png`,
+                        src: `/icons/kibby-maskable-icon-1024.png`,
                         sizes: "1024x1024",
                         type: "image/png",
-                        purpose: "any",
+                        purpose: "any maskable",
                     },
                     {
-                        src: `/icons/kibby-icon-512.png`,
+                        src: `/icons/kibby-maskable-icon-512.png`,
                         sizes: "512x512",
                         type: "image/png",
-                        purpose: "any",
+                        purpose: "any maskable",
                     },
                     {
-                        src: `/icons/kibby-icon-192.png`,
+                        src: `/icons/kibby-maskable-icon-192.png`,
                         sizes: "192x192",
                         type: "image/png",
-                        purpose: "any",
+                        purpose: "any maskable",
+                    },
+                    {
+                        src: `/icons/kibby-maskable-duo-tone-icon-1024.png`,
+                        sizes: "1024x1024",
+                        type: "image/png",
+                        purpose: "monochrome maskable",
+                    },
+                    {
+                        src: `/icons/kibby-maskable-duo-tone-icon-512.png`,
+                        sizes: "512x512",
+                        type: "image/png",
+                        purpose: "monochrome maskable",
+                    },
+                    {
+                        src: `/icons/kibby-maskable-duo-tone-icon-192.png`,
+                        sizes: "192x192",
+                        type: "image/png",
+                        purpose: "monochrome maskable",
                     },
                 ],
             }
