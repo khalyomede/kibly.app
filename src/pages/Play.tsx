@@ -287,6 +287,7 @@ const App: Component = () => {
         const wordToGuess: string = currentWordToGuess[lang][difficulty];
 
         setCurrentWordToGuess(lang, difficulty, randomWord(lang, difficulty));
+        setlettersToGuess(lang, difficulty, createEmptyLetters(5 * getNumberOfLetters()));
 
         alert(`The word was ${wordToGuess}`);
     };
