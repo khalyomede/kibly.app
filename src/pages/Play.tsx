@@ -3,6 +3,7 @@ import { createLocalStore, createLocalSignal } from "../store";
 import * as z from "zod";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import Logo from '../components/Logo';
+import backgroundImage from "../images/kibby-background.png";
 
 type Lang = "en" | "es" | "fr";
 type Difficulty = "easy" | "medium" | "hard";
@@ -324,7 +325,9 @@ const App: Component = () => {
         .filter((letter: Letter): boolean => letter.state === "guessed").length < wordToGuess().length;
 
     return (
-        <div class="min-h-dvh bg-orange-50 flex justify-center">
+        <div class="play-page min-h-dvh bg-orange-50 flex justify-center" style={{
+            "background-image": `url(${backgroundImage})`,
+        }}>
             <div class="h-dvh flex flex-col w-full md:max-w-xl md:mx-auto lg:max-w-sm">
                 {/* Header */}
                 <div class="shrink-0 px-3 py-6 flex items-center gap-8 md:py-8">
