@@ -347,7 +347,7 @@ const App: Component = () => {
                         type="button"
                         onClick={() => setSettingsOpen(true)}
                         aria-label="Open settings"
-                        class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 text-slate-600 bg-white/70 md:w-11 md:h-11"
+                        class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 text-slate-600 bg-white/70 md:w-11 md:h-11 hover:cursor-pointer"
                     >
                         <Settings width="18" height="18" />
                     </button>
@@ -395,13 +395,13 @@ const App: Component = () => {
                     <div class="flex justify-center mb-4 md:my-8 lg:my-6">
                         <Switch>
                             <Match when={gameFinished()}>
-                                <button onClick={onClickReplay} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg">
+                                <button onClick={onClickReplay} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
                                     <span>Replay</span>
                                     <RefreshCcw width="16" height="16" />
                                 </button>
                             </Match>
                             <Match when={!gameFinished()}>
-                                <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm">
+                                <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
                                     <span>Change {gameFinished()}</span>
                                     <RefreshCw width="16" height="16" />
                                 </button>
@@ -422,6 +422,7 @@ const App: Component = () => {
                                     "border": true,
                                     "rounded-lg": true,
                                     "border-2": true,
+                                    "hover:cursor-pointer": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
                                     "border-slate-500": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
                                     "bg-slate-50": !bannedLetters().includes(key()),
                                     "bg-slate-400": bannedLetters().includes(key()),
