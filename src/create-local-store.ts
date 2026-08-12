@@ -8,9 +8,13 @@ const createLocalStore = <StoredDataType extends object>(
 ): [StoredDataType, SetStoreFunction<StoredDataType>] => {
     const rawStoredValue = localStorage.getItem(storageKey);
 
-    const initialData: StoredDataType = rawStoredValue === null
-        ? defaultData
-        : validator(JSON.parse(rawStoredValue));
+    let initialData: StoredDataType = defaultData;
+
+    if (rawStoredValue !== null) {
+        try {
+            initialData = validator(JSON.parse(rawStoredValue));
+        } catch { }
+    }
 
     const [store, setStore] = createStore<StoredDataType>(initialData);
 

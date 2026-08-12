@@ -73,10 +73,21 @@ const App: Component = () => {
     };
 
     const randomWord = (lang: Lang, difficulty: Difficulty): string => {
-        const words = dictionnary[lang][difficulty];
-        const randomIndex = Math.floor(numberBetween(0, (words.length - 1)));
+        const alreadyGuessedWords = guessedWords[lang][difficulty];
+        const words = dictionnary[lang][difficulty].filter((word: string): boolean => !alreadyGuessedWords.includes(word));
 
-        return words[randomIndex];
+        if (words.length === 0) {
+            setGuessedWords(lang, difficulty, []);
+
+            return randomWord(lang, difficulty);
+        }
+
+        const randomIndex = Math.floor(numberBetween(0, (words.length - 1)));
+        const nextRandomWord = words[randomIndex];
+
+        console.log(`word to guess in lang ${lang} and difficulty ${difficulty} will be ${nextRandomWord}`);
+
+        return nextRandomWord;
     };
 
     const getNumberOfLetters = (): number => currentDifficulty() === "easy" ? 5 : (currentDifficulty() === "medium" ? 6 : 7);
@@ -121,7 +132,28 @@ const App: Component = () => {
 
     const [currentDifficulty, setCurrentDifficulty] = createLocalSignal("easy", "difficulty", (data: any): Difficulty => difficultiesDefinition.parse(data));
     const [currentLang, setCurrentLang] = createLocalSignal("en", "lang", (data: any) => langsDefinition.parse(data));
-    const [guessedWords, setGuessedWords] = createLocalSignal<Array<string>>([], "guessedWords", (data) => z.array(z.string()).parse(data));
+    const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<string>>>>(
+        {
+            "en": {
+                "easy": [],
+                "medium": [],
+                "hard": [],
+            },
+            "es": {
+                "easy": [],
+                "medium": [],
+                "hard": [],
+            },
+            "fr": {
+                "easy": [],
+                "medium": [],
+                "hard": [],
+            },
+        },
+        "guessedWords",
+        (data: any) => z.record(langsDefinition, z.record(difficultiesDefinition, z.array(z.string()))).parse(data),
+    );
+
     const [currentWordToGuess, setCurrentWordToGuess] = createLocalStore(
         {
             "fr": {
@@ -207,7 +239,9 @@ const App: Component = () => {
                 });
 
                 if (gameWon()) {
-                    setGuessedWords([...guessedWords(), wordToGuess()]);
+                    const existingGuessedWords = guessedWords[lang][difficulty];
+
+                    setGuessedWords(lang, difficulty, [...existingGuessedWords, wordToGuess()]);
                 }
             }
 
@@ -325,17 +359,18 @@ const App: Component = () => {
         .filter((letter: Letter): boolean => letter.state === "guessed").length < wordToGuess().length;
 
     return (
+
         <div class="play-page min-h-dvh bg-orange-50 flex justify-center" style={{
             "background-image": `url(${backgroundImage})`,
         }}>
             <div class="h-dvh flex flex-col w-full md:max-w-xl md:mx-auto lg:max-w-sm">
                 {/* Header */}
-                <div class="shrink-0 px-3 py-6 flex items-center gap-8 md:py-8">
+                <header class="shrink-0 px-3 py-6 flex items-center gap-8 md:py-8">
                     {/* Spacer to keep the logo optically centered against the cog */}
                     <div class="w-9 shrink-0 md:w-11" aria-hidden="true"></div>
-                    <div class="grow flex justify-center">
+                    <h1 class="grow flex justify-center">
                         <Logo class="w-100 h-auto" />
-                    </div>
+                    </h1>
                     <button
                         type="button"
                         onClick={() => setSettingsOpen(true)}
@@ -344,9 +379,9 @@ const App: Component = () => {
                     >
                         <Settings width="18" height="18" />
                     </button>
-                </div>
+                </header>
                 {/* Middle / game area */}
-                <div class="flex-1 min-h-0 flex flex-col items-center justify-center gap-6 md:gap-0">
+                <main class="flex-1 min-h-0 flex flex-col items-center justify-center gap-6 md:gap-0">
                     {/* Grid */}
                     <div class="w-full flex items-center px-2 md:px-6">
                         <div classList={{
@@ -402,11 +437,11 @@ const App: Component = () => {
                             </Match>
                         </Switch>
                     </div>
-                </div>
+                </main>
                 {/* Keyboard/Win-loose text */}
                 <Switch>
                     <Match when={!gameFinished()}>
-                        <div class="shrink-0 pb-[env(safe-area-inset-bottom)] grid grid-rows-3 grid-cols-10 gap-2 mb-4 md:mb-6 px-4 md:gap-2 lg:gap-1 md:px-6">
+                        <footer class="shrink-0 pb-[env(safe-area-inset-bottom)] grid grid-rows-3 grid-cols-10 gap-2 mb-4 md:mb-6 px-4 md:gap-2 lg:gap-1 md:px-6">
                             <Index each={keyboard[currentLang()]}>
                                 {(key) => <button onclick={() => onKeyboardClick(key())} classList={{
                                     "flex": true,
@@ -428,7 +463,7 @@ const App: Component = () => {
                                     "md:text-xl": true,
                                     "aspect-square": key() !== "HINT",
                                     "col-span-2": key() === "HINT"
-                                }}>
+                                }} aria-label={key() === "DELETE" ? "Delete" : (key() === "ENTER" ? "Validate" : undefined)}>
                                     <Switch fallback={key()}>
                                         <Match when={key() === "HINT"}>hint</Match>
                                         <Match when={key() === "DELETE"}><Delete width="18" height="18" /></Match>
@@ -436,18 +471,18 @@ const App: Component = () => {
                                     </Switch>
                                 </button>}
                             </Index>
-                        </div>
+                        </footer>
                     </Match>
                     <Match when={gameLost()}>
-                        <div class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6">
+                        <footer class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6">
                             <span class="tracking-wide">Word was:</span>
                             <span class="tracking-widest">{wordToGuess()}</span>
-                        </div>
+                        </footer>
                     </Match>
                     <Match when={gameWon()}>
-                        <div class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6">
+                        <footer class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6">
                             <span class="tracking-wide">You won!</span>
-                        </div>
+                        </footer>
                     </Match>
                 </Switch>
 

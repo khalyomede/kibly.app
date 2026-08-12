@@ -7,9 +7,13 @@ const createLocalSignal = <StoredDataType,>(
 ): [Accessor<StoredDataType>, Setter<StoredDataType>] => {
     const rawStoredValue = localStorage.getItem(storageKey);
 
-    const initialData: StoredDataType = rawStoredValue === null
-        ? defaultData
-        : validator(JSON.parse(rawStoredValue));
+    let initialData: StoredDataType = defaultData;
+
+    if (rawStoredValue !== null) {
+        try {
+            initialData = validator(JSON.parse(rawStoredValue));
+        } catch { }
+    }
 
     const [readStoredValue, writeStoredValue] = createSignal<StoredDataType>(initialData);
 

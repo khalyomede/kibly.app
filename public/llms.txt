@@ -1,0 +1,19 @@
+# Kibby
+
+> Kibby is a cosy word guessing game where players try to find the hidden word one guess at a time.
+
+Kibby is a browser-based word guessing game with a cosy, underwater visual style featuring an axolotl mascot and marine/coral artwork.
+
+The website has two main pages:
+
+## Pages
+
+- [Kibby](https://play-kibby.com/): The main landing page for Kibby, introducing the game.
+- [Play Kibby](https://play-kibby.com/play): The interactive word guessing game.
+
+## Game
+
+- Kibby is a word guessing game.
+- The game is played directly in the browser.
+- The game interface includes a word grid, an on-screen keyboard, a hint action, and controls for changing the game.
+- The interface supports an AZERTY keyboard layout.

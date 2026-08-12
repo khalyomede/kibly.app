@@ -1,12 +1,14 @@
 /* @refresh reload */
 import { render } from 'solid-js/web';
-import { init as initSentry } from "@sentry/solid";
+import { init as initSentry, withSentryErrorBoundary } from "@sentry/solid";
 import { solidRouterBrowserTracingIntegration, withSentryRouterRouting } from "@sentry/solid/solidrouter";
 import { Route, Router } from "@solidjs/router";
 import Home from "./pages/Home";
 import Play from "./pages/Play";
+import PlayError from "./pages/PlayError";
 import 'solid-devtools';
 import './index.css';
+import { ErrorBoundary } from 'solid-js';
 
 initSentry({
     dsn: "https://253ff891c423bb4bffcc46cc77a14e25@o396055.ingest.us.sentry.io/4510897559306240",
@@ -23,14 +25,17 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 }
 
 const SentryRouter = withSentryRouterRouting(Router);
+const SentryErrorBoundary = withSentryErrorBoundary(ErrorBoundary);
 
 render(
     () => (
-        <SentryRouter>
-            <Route path="/" component={Home} />
-            <Route path="/play" component={Play} />
-            <Route path="*404" component={Home} />
-        </SentryRouter>
+        <SentryErrorBoundary fallback={PlayError}>
+            <SentryRouter>
+                <Route path="/" component={Home} />
+                <Route path="/play" component={Play} />
+                <Route path="*404" component={Home} />
+            </SentryRouter>
+        </SentryErrorBoundary>
     ),
     root!
 );
