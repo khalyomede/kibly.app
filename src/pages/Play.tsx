@@ -362,8 +362,9 @@ const App: Component = () => {
                                 {(guessedLetter) => <span classList={{
                                     "aspect-square": true,
                                     "border": true,
-                                    "rounded-xl": true,
-                                    "md:rounded-2xl": true,
+                                    "rounded-2xl": true,
+                                    "md:rounded-3xl": true,
+                                    "lg:rounded-2xl": true,
                                     "flex": true,
                                     "items-center": true,
                                     "justify-center": true,
@@ -385,13 +386,13 @@ const App: Component = () => {
                     <div class="flex justify-center mb-4 md:my-8 lg:my-6">
                         <Switch>
                             <Match when={gameFinished()}>
-                                <button onClick={onClickReplay} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
+                                <button onClick={onClickReplay} class="px-6 py-1 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
                                     <span>Replay</span>
                                     <RefreshCcw width="16" height="16" />
                                 </button>
                             </Match>
                             <Match when={!gameFinished()}>
-                                <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
+                                <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
                                     <span>Change</span>
                                     <RefreshCw width="16" height="16" />
                                 </button>
@@ -411,6 +412,8 @@ const App: Component = () => {
                                     "items-center": true,
                                     "border": true,
                                     "rounded-lg": true,
+                                    "md:rounded-2xl": true,
+                                    "lg:rounded-xl": true,
                                     "border-2": true,
                                     "hover:cursor-pointer": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
                                     "border-slate-500": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
