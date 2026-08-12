@@ -402,7 +402,7 @@ const App: Component = () => {
                             </Match>
                             <Match when={!gameFinished()}>
                                 <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
-                                    <span>Change {gameFinished()}</span>
+                                    <span>Change</span>
                                     <RefreshCw width="16" height="16" />
                                 </button>
                             </Match>
