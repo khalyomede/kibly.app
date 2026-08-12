@@ -266,19 +266,9 @@ const App: Component = () => {
     const onClickReplay = (): void => {
         const lang: Lang = currentLang();
         const difficulty: Difficulty = currentDifficulty();
-        const letters: Array<Letter> = lettersToGuess[lang][difficulty];
-        let letterIndex = 0;
-
-        for (const _ of letters) {
-            setlettersToGuess(lang, difficulty, letterIndex, {
-                value: "",
-                state: "to-guess",
-            });
-
-            letterIndex += 1;
-        }
 
         setCurrentWordToGuess(lang, difficulty, randomWord(lang, difficulty));
+        setlettersToGuess(lang, difficulty, createEmptyLetters(5 * getNumberOfLetters()));
     };
 
     const onClickChange = (): void => {
@@ -286,8 +276,7 @@ const App: Component = () => {
         const difficulty: Difficulty = currentDifficulty();
         const wordToGuess: string = currentWordToGuess[lang][difficulty];
 
-        setCurrentWordToGuess(lang, difficulty, randomWord(lang, difficulty));
-        setlettersToGuess(lang, difficulty, createEmptyLetters(5 * getNumberOfLetters()));
+        onClickReplay();
 
         alert(`The word was ${wordToGuess}`);
     };
@@ -336,7 +325,7 @@ const App: Component = () => {
 
     return (
         <div class="min-h-dvh bg-orange-50 flex justify-center">
-            <div class="h-dvh flex flex-col w-full md:max-w-2xl md:mx-auto lg:max-w-md">
+            <div class="h-dvh flex flex-col w-full md:max-w-xl md:mx-auto lg:max-w-sm">
                 {/* Header */}
                 <div class="shrink-0 px-3 py-6 flex items-center gap-8 md:py-8">
                     {/* Spacer to keep the logo optically centered against the cog */}
@@ -413,7 +402,7 @@ const App: Component = () => {
                 {/* Keyboard/Win-loose text */}
                 <Switch>
                     <Match when={!gameFinished()}>
-                        <div class="shrink-0 pb-[env(safe-area-inset-bottom)] grid grid-rows-3 grid-cols-10 gap-2 mb-4 md:mb-6 px-4 md:gap-3 lg:gap-1 md:px-6">
+                        <div class="shrink-0 pb-[env(safe-area-inset-bottom)] grid grid-rows-3 grid-cols-10 gap-2 mb-4 md:mb-6 px-4 md:gap-2 lg:gap-1 md:px-6">
                             <Index each={keyboard[currentLang()]}>
                                 {(key) => <button onclick={() => onKeyboardClick(key())} classList={{
                                     "flex": true,
@@ -444,13 +433,13 @@ const App: Component = () => {
                         </div>
                     </Match>
                     <Match when={gameLost()}>
-                        <div class="flex items-center justify-center gap-2 text-xl md:text-2xl">
+                        <div class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6">
                             <span class="tracking-wide">Word was:</span>
                             <span class="tracking-widest">{wordToGuess()}</span>
                         </div>
                     </Match>
                     <Match when={gameWon()}>
-                        <div class="flex items-center justify-center gap-2 text-xl md:text-2xl">
+                        <div class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6">
                             <span class="tracking-wide">You won!</span>
                         </div>
                     </Match>
