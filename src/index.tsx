@@ -11,7 +11,7 @@ import './index.css';
 import { ErrorBoundary } from 'solid-js';
 
 initSentry({
-    dsn: "https://253ff891c423bb4bffcc46cc77a14e25@o396055.ingest.us.sentry.io/4510897559306240",
+    dsn: "https://3e9d25a2fa7bfc44e48ea522be92af1e@o396055.ingest.us.sentry.io/4511892369375232",
     tracesSampleRate: 0.1, //  Capture 10% of the transactions
     integrations: [solidRouterBrowserTracingIntegration()],
 });
