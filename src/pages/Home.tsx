@@ -1,15 +1,29 @@
 import { A, useNavigate } from "@solidjs/router";
 import { Component } from "solid-js";
 import Logo from "../components/Logo";
-import createLocalSignal from "../create-local-signal";
+import { createLocalSignal } from "../helpers";
+import { lang } from "../definitions";
+import { Lang } from "../types";
 import * as z from "zod";
 
 const Home: Component = () => {
     const [clickedPlay, setClickedPlay] = createLocalSignal(false, "clickedPlay", (data: any): boolean => z.boolean().parse(data));
     const navigate = useNavigate();
+    const browserLanguage: string = new Intl.Locale(navigator.language).language;
+    const [, setCurrentLang] = createLocalSignal("en", "lang", (data: any) => lang.parse(data));
 
     if (clickedPlay()) {
         navigate("/play", { replace: true });
+    } else {
+        let browserLang: Lang | null = null;
+
+        try {
+            browserLang = lang.parse(browserLanguage);
+        } catch { }
+
+        if (browserLang !== null) {
+            setCurrentLang(browserLang);
+        }
     }
 
     return <div class="min-h-screen bg-orange-50 flex items-center justify-center flex-col gap-4 md:gap-8">

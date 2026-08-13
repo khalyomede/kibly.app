@@ -1,104 +1,35 @@
 import { For, Index, Match, Show, Switch, createSignal, type Component } from 'solid-js';
-import { createLocalStore, createLocalSignal } from "../store";
-import * as z from "zod";
+import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters } from "../helpers";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import Logo from '../components/Logo';
 import backgroundImage from "../images/kibby-background.png";
-
-type Lang = "en" | "es" | "fr";
-type Difficulty = "easy" | "medium" | "hard";
-type LetterState = "to-guess" | "guessed" | "good" | "bad" | "misplaced";
-type Key = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "HINT" | "DELETE" | "ENTER";
-
-interface Letter {
-    state: LetterState;
-    value: string;
-};
+import { Difficulty, Lang, LetterState } from "../types";
+import { Letter } from "../interfaces";
+import { difficulties, keyboard, langs, letterStates, words } from "../data";
+import { difficulty, lang, letter } from "../definitions";
+import * as z from "zod";
 
 const App: Component = () => {
-    const [settingsOpen, setSettingsOpen] = createSignal(false);
     const langLabels: Record<Lang, string> = { en: "English", es: "Español", fr: "Français" };
     const difficultyLabels: Record<Difficulty, string> = { easy: "Easy", medium: "Medium", hard: "Hard" };
-    const difficulties: Array<Difficulty> = ["easy", "medium", "hard"];
-    const letterStates: Array<LetterState> = ["to-guess", "guessed", "good", "bad", "misplaced"];
-    const difficultiesDefinition = z.enum(difficulties);
-    const letterStateDefinition = z.enum(letterStates);
-    const letterDefinition = z.object({ state: letterStateDefinition, value: z.string() });
-    const langs: Array<Lang> = ["en", "es", "fr"];
-    const langsDefinition = z.enum(langs);
-    const dictionnary = {
-        "en": {
-            "easy": ["APPLE", "BREAD", "CHAIR", "SMILE", "TIGER"],
-            "medium": ["PLANET", "GARDEN", "WINDOW", "CASTLE", "ANIMAL"],
-            "hard": ["MORNING", "PICTURE", "CHICKEN", "KITCHEN", "BLANKET"],
-        },
-        "es": {
-            "easy": ["PERRO", "PLAYA", "CAMPO", "REINA", "COCHE"],
-            "medium": ["BOSQUE", "CAMINO", "ZAPATO", "PUERTA", "CAMISA"],
-            "hard": ["VENTANA", "CABALLO", "FAMILIA", "NARANJA", "PLANETA"],
-        },
-        "fr": {
-            "easy": ["ARBRE", "LIVRE", "TABLE", "PLAGE", "NEIGE"],
-            "medium": ["MAISON", "CHEMIN", "BATEAU", "ORANGE", "OISEAU"],
-            "hard": ["VOITURE", "VILLAGE", "FROMAGE", "POISSON", "CHEMISE"],
-        },
-    };
 
-    const keyboard: Record<Lang, Array<Key>> = {
-        "en": [
-            "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
-            "A", "S", "D", "F", "G", "H", "J", "K", "L", "DELETE",
-            "Z", "X", "C", "V", "B", "N", "M", "HINT", "ENTER"
-        ],
-        "es": [
-            "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
-            "A", "S", "D", "F", "G", "H", "J", "K", "L", "DELETE",
-            "Z", "X", "C", "V", "B", "N", "M", "HINT", "ENTER"
-        ],
-        "fr": [
-            "A", "Z", "E", "R", "T", "Y", "U", "I", "O", "P",
-            "Q", "S", "D", "F", "G", "H", "J", "K", "L", "M",
-            "Z", "X", "C", "V", "B", "N", "HINT", "DELETE", "ENTER",
-        ],
-    };
-
-    // Utilities
-    const createEmptyLetters = (count: number): Array<Letter> => Array.from({ length: count }, () => ({
-        state: "to-guess",
-        value: "",
-    }));
-
-    const numberBetween = (min: number, max: number): number => {
-        return Math.random() * (max - min) + min;
-    };
-
+    // Helpers
     const randomWord = (lang: Lang, difficulty: Difficulty): string => {
         const alreadyGuessedWords = guessedWords[lang][difficulty];
-        const words = dictionnary[lang][difficulty].filter((word: string): boolean => !alreadyGuessedWords.includes(word));
+        const selectedWords = words[lang][difficulty].filter((word: string): boolean => !alreadyGuessedWords.includes(word));
 
-        if (words.length === 0) {
+        if (selectedWords.length === 0) {
             setGuessedWords(lang, difficulty, []);
 
             return randomWord(lang, difficulty);
         }
 
-        const randomIndex = Math.floor(numberBetween(0, (words.length - 1)));
-        const nextRandomWord = words[randomIndex];
+        const randomIndex = Math.floor(numberBetween(0, (selectedWords.length - 1)));
+        const nextRandomWord = selectedWords[randomIndex];
 
         console.log(`word to guess in lang ${lang} and difficulty ${difficulty} will be ${nextRandomWord}`);
 
         return nextRandomWord;
-    };
-
-    const getNumberOfLetters = (): number => currentDifficulty() === "easy" ? 5 : (currentDifficulty() === "medium" ? 6 : 7);
-
-    const getNumberOfGuessedLetters = (): number => lettersToGuess[currentLang()][currentDifficulty()].filter((letter) => letter.state === "guessed").length;
-
-    const wordIsCompleted = (): boolean => {
-        const numberOfLetters: number = getNumberOfLetters();
-        const numberOfGuessedLetters: number = getNumberOfGuessedLetters();
-
-        return numberOfGuessedLetters > 0 && numberOfGuessedLetters % numberOfLetters === 0;
     };
 
     // Stores/signals
@@ -122,16 +53,17 @@ const App: Component = () => {
         },
         "lettersToGuess",
         (data: any): Record<Lang, Record<Difficulty, Array<Letter>>> => z.record(
-            langsDefinition,
+            lang,
             z.record(
-                difficultiesDefinition,
-                z.array(letterDefinition)
+                difficulty,
+                z.array(letter)
             )
         ).parse(data)
     );
 
-    const [currentDifficulty, setCurrentDifficulty] = createLocalSignal("easy", "difficulty", (data: any): Difficulty => difficultiesDefinition.parse(data));
-    const [currentLang, setCurrentLang] = createLocalSignal("en", "lang", (data: any) => langsDefinition.parse(data));
+    const [settingsOpen, setSettingsOpen] = createSignal(false);
+    const [currentDifficulty, setCurrentDifficulty] = createLocalSignal("easy", "difficulty", (data: any): Difficulty => difficulty.parse(data));
+    const [currentLang, setCurrentLang] = createLocalSignal("en", "lang", (data: any) => lang.parse(data));
     const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<string>>>>(
         {
             "en": {
@@ -151,7 +83,7 @@ const App: Component = () => {
             },
         },
         "guessedWords",
-        (data: any) => z.record(langsDefinition, z.record(difficultiesDefinition, z.array(z.string()))).parse(data),
+        (data: any) => z.record(lang, z.record(difficulty, z.array(z.string()))).parse(data),
     );
 
     const [currentWordToGuess, setCurrentWordToGuess] = createLocalStore(
@@ -174,9 +106,9 @@ const App: Component = () => {
         },
         "wordToGuess",
         (data: any): Record<Lang, Record<Difficulty, string>> => z.record(
-            langsDefinition,
+            lang,
             z.record(
-                difficultiesDefinition,
+                difficulty,
                 z.string()
             )
         ).parse(data)
@@ -317,6 +249,17 @@ const App: Component = () => {
     };
 
     // Derived
+    const getNumberOfLetters = (): number => currentDifficulty() === "easy" ? 5 : (currentDifficulty() === "medium" ? 6 : 7);
+
+    const getNumberOfGuessedLetters = (): number => lettersToGuess[currentLang()][currentDifficulty()].filter((letter) => letter.state === "guessed").length;
+
+    const wordIsCompleted = (): boolean => {
+        const numberOfLetters: number = getNumberOfLetters();
+        const numberOfGuessedLetters: number = getNumberOfGuessedLetters();
+
+        return numberOfGuessedLetters > 0 && numberOfGuessedLetters % numberOfLetters === 0;
+    };
+
     const wordGuessed = (): boolean => {
         const lang = currentLang();
         const difficulty = currentDifficulty();
