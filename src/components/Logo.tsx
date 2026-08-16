@@ -24,7 +24,7 @@ const Logo: Component<LogoProperties> = (properties) => {
         <source type="image/png" media="(min-width: 769px)" srcset={logoTablet} />
         <source type="image/png" media="(min-width: 391px)" srcset={logoDesktop} />
 
-        <img src={logoMobile} alt="Kibby Logo" class={properties.class} fetchpriority="high" />
+        <img src={logoMobile} alt="Kibby Logo" class={properties.class} fetchpriority="high" style="view-transition-name: logo;" />
     </picture>;
 };
 
