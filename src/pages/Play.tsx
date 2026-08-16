@@ -1,5 +1,5 @@
 import { For, Index, Match, Show, Switch, createSignal, type Component } from 'solid-js';
-import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, prefersReducedMotion } from "../helpers";
+import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, prefersReducedMotion, vibrate } from "../helpers";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import Logo from '../components/Logo';
 import backgroundImage from "../images/kibby-background.png";
@@ -175,6 +175,8 @@ const App: Component = () => {
                 return;
             }
 
+            vibrate();
+
             const indicesOfAllGuessedLetters: Array<number> = lettersToGuessForCurrentDifficulty
                 .map((letter, index) => letter.state === "guessed" ? index : null)
                 .filter((indexOrNull): indexOrNull is number => indexOrNull !== null);
@@ -224,6 +226,8 @@ const App: Component = () => {
                 return;
             }
 
+            vibrate();
+
             const indexOfLastGuessedLetter = lettersToGuessForCurrentDifficulty.findLastIndex((letter) => letter.state === "guessed");
 
             const clearedLetter = lettersToGuessForCurrentDifficulty[indexOfLastGuessedLetter] = {
@@ -240,6 +244,8 @@ const App: Component = () => {
             if (!canHint()) {
                 return;
             }
+
+            vibrate();
 
             const indexOfNextLetterToGuess: number = lettersToGuessForCurrentDifficulty.findIndex((letter) => letter.state === "to-guess");
             const indexInWordToGuess: number = indexOfNextLetterToGuess % numberOfLetters;
@@ -258,6 +264,8 @@ const App: Component = () => {
             return;
         }
 
+        vibrate();
+
         const indexOfNextLetterToGuess: number = lettersToGuessForCurrentDifficulty.findIndex((letter) => letter.state === "to-guess");
         let nextLetterToGuess: Letter = lettersToGuessForCurrentDifficulty[indexOfNextLetterToGuess];
 
@@ -273,6 +281,7 @@ const App: Component = () => {
         const lang: Lang = currentLang();
         const difficulty: Difficulty = currentDifficulty();
 
+        vibrate();
         setCurrentWordToGuess(lang, difficulty, randomWord(lang, difficulty));
         setlettersToGuess(lang, difficulty, createEmptyLetters(5 * getNumberOfLetters()));
         setFlippingTileIndices(new Set<number>());
@@ -286,6 +295,26 @@ const App: Component = () => {
         onClickReplay();
 
         alert(`The word was ${wordToGuess}`);
+    };
+
+    const onClickSettings = (): void => {
+        vibrate();
+        setSettingsOpen(true);
+    };
+
+    const onClickCloseSettings = (): void => {
+        vibrate();
+        setSettingsOpen(false);
+    };
+
+    const onClickSaveLang = (lang: Lang): void => {
+        vibrate();
+        saveLang(lang);
+    };
+
+    const onClickSaveDifficulty = (difficulty: Difficulty): void => {
+        vibrate();
+        saveDifficulty(difficulty);
     };
 
     // Derived
@@ -355,7 +384,7 @@ const App: Component = () => {
                     </h1>
                     <button
                         type="button"
-                        onClick={() => setSettingsOpen(true)}
+                        onClick={onClickSettings}
                         aria-label="Open settings"
                         class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 text-slate-600 bg-white/70 md:w-11 md:h-11 hover:cursor-pointer"
                     >
@@ -482,7 +511,7 @@ const App: Component = () => {
                                 <h2 class="grow text-lg text-slate-700 tracking-wide md:text-xl">{t("Settings")}</h2>
                                 <button
                                     type="button"
-                                    onClick={() => setSettingsOpen(false)}
+                                    onClick={onClickCloseSettings}
                                     aria-label="Close settings"
                                     class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 border-2 border-slate-200"
                                 >
@@ -497,7 +526,7 @@ const App: Component = () => {
                                     <For each={langs}>
                                         {(lang) => <button
                                             type="button"
-                                            onClick={() => saveLang(lang)}
+                                            onClick={() => onClickSaveLang(lang)}
                                             classList={{
                                                 "px-2": true,
                                                 "py-2": true,
@@ -520,7 +549,7 @@ const App: Component = () => {
                                     <For each={difficulties}>
                                         {(difficulty) => <button
                                             type="button"
-                                            onClick={() => saveDifficulty(difficulty)}
+                                            onClick={() => onClickSaveDifficulty(difficulty)}
                                             classList={{
                                                 "px-2": true,
                                                 "py-2": true,

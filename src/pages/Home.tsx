@@ -1,7 +1,7 @@
 import { A, useNavigate } from "@solidjs/router";
 import { Component } from "solid-js";
 import Logo from "../components/Logo";
-import { createLocalSignal } from "../helpers";
+import { createLocalSignal, vibrate } from "../helpers";
 import { lang } from "../definitions";
 import { Lang, Translation } from "../types";
 import { translations } from "../data";
@@ -36,17 +36,16 @@ const Home: Component = () => {
         const path: string = "/play";
         const supportsViewTransitions: boolean = typeof document.startViewTransition === "function";
 
+        vibrate();
+        setClickedPlay(true);
+
         if (!supportsViewTransitions) {
             navigate(path);
-            setClickedPlay(true);
 
             return;
         }
 
-        document.startViewTransition(() => {
-            navigate(path);
-            setClickedPlay(true);
-        });
+        document.startViewTransition(() => navigate(path));
     };
 
     return <div class="min-h-screen bg-orange-50 flex items-center justify-center flex-col gap-4 md:gap-8">
