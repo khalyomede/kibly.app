@@ -3,15 +3,15 @@ import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters 
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import Logo from '../components/Logo';
 import backgroundImage from "../images/kibby-background.png";
-import { Difficulty, Lang, LetterState } from "../types";
+import { Difficulty, Lang, LetterState, Translation } from "../types";
 import { Letter } from "../interfaces";
-import { difficulties, keyboard, langs, letterStates, words } from "../data";
+import { difficulties, keyboard, langs, translations, words } from "../data";
 import { difficulty, lang, letter } from "../definitions";
+import { createI18n } from "../packages/i18n";
 import * as z from "zod";
 
 const App: Component = () => {
     const langLabels: Record<Lang, string> = { en: "English", es: "Español", fr: "Français" };
-    const difficultyLabels: Record<Difficulty, string> = { easy: "Easy", medium: "Medium", hard: "Hard" };
 
     // Helpers
     const randomWord = (lang: Lang, difficulty: Difficulty): string => {
@@ -64,6 +64,7 @@ const App: Component = () => {
     const [settingsOpen, setSettingsOpen] = createSignal(false);
     const [currentDifficulty, setCurrentDifficulty] = createLocalSignal("easy", "difficulty", (data: any): Difficulty => difficulty.parse(data));
     const [currentLang, setCurrentLang] = createLocalSignal("en", "lang", (data: any) => lang.parse(data));
+    const [t, setLocale] = createI18n<Lang, Translation>(translations, currentLang());
     const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<string>>>>(
         {
             "en": {
@@ -130,7 +131,9 @@ const App: Component = () => {
         }
 
         localStorage.setItem("lang", lang);
-        setCurrentLang(lang as Lang);
+        const selectedLang: Lang = lang as Lang;
+        setCurrentLang(selectedLang);
+        setLocale(selectedLang);
     };
 
     const onKeyboardClick = (key: string): void => {
@@ -302,7 +305,6 @@ const App: Component = () => {
         .filter((letter: Letter): boolean => letter.state === "guessed").length < wordToGuess().length;
 
     return (
-
         <div class="play-page min-h-dvh bg-orange-50 flex justify-center" style={{
             "background-image": `url(${backgroundImage})`,
         }}>
@@ -368,13 +370,13 @@ const App: Component = () => {
                         <Switch>
                             <Match when={gameFinished()}>
                                 <button onClick={onClickReplay} class="px-6 py-1 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
-                                    <span>Replay</span>
+                                    <span>{t("Replay")}</span>
                                     <RefreshCcw width="16" height="16" />
                                 </button>
                             </Match>
                             <Match when={!gameFinished()}>
                                 <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
-                                    <span>Change</span>
+                                    <span>{t("Change")}</span>
                                     <RefreshCw width="16" height="16" />
                                 </button>
                             </Match>
@@ -406,9 +408,9 @@ const App: Component = () => {
                                     "md:text-xl": true,
                                     "aspect-square": key() !== "HINT",
                                     "col-span-2": key() === "HINT"
-                                }} aria-label={key() === "DELETE" ? "Delete" : (key() === "ENTER" ? "Validate" : undefined)}>
+                                }} aria-label={key() === "DELETE" ? t("Delete") : (key() === "ENTER" ? t("Validate") : undefined)}>
                                     <Switch fallback={key()}>
-                                        <Match when={key() === "HINT"}>hint</Match>
+                                        <Match when={key() === "HINT"}>{t("hint")}</Match>
                                         <Match when={key() === "DELETE"}><Delete width="18" height="18" /></Match>
                                         <Match when={key() === "ENTER"}><CheckCheck width="18" height="18" /></Match>
                                     </Switch>
@@ -418,13 +420,12 @@ const App: Component = () => {
                     </Match>
                     <Match when={gameLost()}>
                         <footer class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6">
-                            <span class="tracking-wide">Word was:</span>
-                            <span class="tracking-widest">{wordToGuess()}</span>
+                            <span class="tracking-wide">{t("Word was: {word}", wordToGuess())}</span>
                         </footer>
                     </Match>
                     <Match when={gameWon()}>
                         <footer class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6">
-                            <span class="tracking-wide">You won!</span>
+                            <span class="tracking-wide">{t("You found it!")}</span>
                         </footer>
                     </Match>
                 </Switch>
@@ -436,7 +437,7 @@ const App: Component = () => {
                         <div class="sheet-panel relative bg-orange-50 rounded-t-3xl border-t-2 border-slate-200 px-5 pt-3 pb-8 shadow-2xl md:w-full md:max-w-md md:rounded-3xl md:border md:border-t-2 md:px-8 md:py-8">
                             <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300 md:hidden"></div>
                             <div class="flex items-center mb-6">
-                                <h2 class="grow text-lg text-slate-700 tracking-wide md:text-xl">Settings</h2>
+                                <h2 class="grow text-lg text-slate-700 tracking-wide md:text-xl">{t("Settings")}</h2>
                                 <button
                                     type="button"
                                     onClick={() => setSettingsOpen(false)}
@@ -488,7 +489,13 @@ const App: Component = () => {
                                                 "border-green-800 bg-green-600 text-green-50": currentDifficulty() === difficulty,
                                                 "border-slate-300 bg-white/70 text-slate-600": currentDifficulty() !== difficulty,
                                             }}
-                                        >{difficultyLabels[difficulty]}</button>}
+                                        >
+                                            <Switch>
+                                                <Match when={difficulty === "easy"}>{t("Easy")}</Match>
+                                                <Match when={difficulty === "medium"}>{t("Medium")}</Match>
+                                                <Match when={difficulty === "hard"}>{t("Hard")}</Match>
+                                            </Switch>
+                                        </button>}
                                     </For>
                                 </div>
                             </div>

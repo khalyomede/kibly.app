@@ -1,0 +1,51 @@
+import { Lang, Translation } from "../types";
+
+const translations: Record<Lang, Translation> = {
+    "en": {
+        "Play now": (): string => "Play now",
+        "A cosy word guessing game": (): string => "A cosy word guessing game",
+        "Change": (): string => "Change",
+        "Replay": (): string => "Replay",
+        "Delete": (): string => "Delete",
+        "Validate": (): string => "Validate",
+        "hint": (): string => "hint",
+        "Word was: {word}": (word: string): string => `Word was: ${word}`,
+        "You found it!": (): string => "You found it!",
+        "Settings": (): string => "Settings",
+        "Easy": (): string => "Easy",
+        "Medium": (): string => "Medium",
+        "Hard": (): string => "Hard",
+    },
+    "es": {
+        "Play now": (): string => "Jugar ahora",
+        "A cosy word guessing game": (): string => "Un divertido juego de adivinar palabras",
+        "Change": (): string => "Cambiar",
+        "Replay": (): string => "Jugar de nuevo",
+        "Delete": (): string => "Eliminar",
+        "Validate": (): string => "Validar",
+        "hint": (): string => "pista",
+        "Word was: {word}": (word: string): string => `La palabra era: ${word}`,
+        "You found it!": (): string => "¡Lo encontraste!",
+        "Settings": (): string => "Configuración",
+        "Easy": (): string => "Fácil",
+        "Medium": (): string => "Medio",
+        "Hard": (): string => "Difícil",
+    },
+    "fr": {
+        "Play now": (): string => "Jouer maintenant",
+        "A cosy word guessing game": (): string => "Un jeu de devinettes de mots convivial",
+        "Change": (): string => "Changer",
+        "Replay": (): string => "Rejouer",
+        "Delete": (): string => "Supprimer",
+        "Validate": (): string => "Valider",
+        "hint": (): string => "indice",
+        "Word was: {word}": (word: string): string => `Le mot était : ${word}`,
+        "You found it!": (): string => "Tu l'as trouvé !",
+        "Settings": (): string => "Paramètres",
+        "Easy": (): string => "Facile",
+        "Medium": (): string => "Moyen",
+        "Hard": (): string => "Dur",
+    },
+};
+
+export default translations;
