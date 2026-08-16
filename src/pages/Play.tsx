@@ -1,5 +1,5 @@
 import { For, Index, Match, Show, Switch, createSignal, type Component } from 'solid-js';
-import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters } from "../helpers";
+import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, prefersReducedMotion } from "../helpers";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import Logo from '../components/Logo';
 import backgroundImage from "../images/kibby-background.png";
@@ -32,7 +32,34 @@ const App: Component = () => {
         return nextRandomWord;
     };
 
+    const revealLetterAtIndex = (indexOfGuessedLetter: number, numberOfLetters: number): void => {
+        const difficulty: Difficulty = currentDifficulty();
+        const lang: Lang = currentLang();
+        const lettersToGuessForCurrentDifficulty: Array<Letter> = lettersToGuess[lang][difficulty];
+        const guessedLetter: Letter = lettersToGuessForCurrentDifficulty[indexOfGuessedLetter];
+        const indexInWordToGuess: number = indexOfGuessedLetter % numberOfLetters;
+        const letterInWordToGuess: string = wordToGuess()[indexInWordToGuess];
+
+        let state: LetterState = "bad";
+
+        if (letterInWordToGuess === guessedLetter.value) {
+            state = "good";
+        } else {
+            if (wordToGuess().includes(guessedLetter.value)) {
+                state = "misplaced";
+            } else {
+                state = "bad";
+            }
+        }
+
+        setlettersToGuess(lang, difficulty, indexOfGuessedLetter, {
+            ...guessedLetter,
+            state: state,
+        });
+    };
+
     // Stores/signals
+    const [flippingTileIndices, setFlippingTileIndices] = createSignal<Set<number>>(new Set());
     const [lettersToGuess, setlettersToGuess] = createLocalStore<Record<Lang, Record<Difficulty, Array<Letter>>>>(
         {
             "en": {
@@ -148,37 +175,46 @@ const App: Component = () => {
                 return;
             }
 
-            const indicesOfAllGuessedLetters = lettersToGuessForCurrentDifficulty
+            const indicesOfAllGuessedLetters: Array<number> = lettersToGuessForCurrentDifficulty
                 .map((letter, index) => letter.state === "guessed" ? index : null)
-                .filter((number) => number !== null);
+                .filter((indexOrNull): indexOrNull is number => indexOrNull !== null);
 
-            for (const indexOfGuessedLetter of indicesOfAllGuessedLetters) {
-                const indexInWordToGuess: number = indexOfGuessedLetter % numberOfLetters;
-                const guessedLetter: Letter = lettersToGuessForCurrentDifficulty[indexOfGuessedLetter];
-                const letterInWordToGuess: string = wordToGuess()[indexInWordToGuess];
-                let state: LetterState = "bad";
-
-                if (letterInWordToGuess === guessedLetter.value) {
-                    state = "good";
-                } else {
-                    if (wordToGuess().includes(guessedLetter.value)) {
-                        state = "misplaced";
-                    } else {
-                        state = "bad";
-                    }
-                }
-
-                setlettersToGuess(lang, difficulty, indexOfGuessedLetter, {
-                    ...guessedLetter,
-                    state: state,
-                });
-
+            const finalizeValidation = (): void => {
                 if (gameWon()) {
                     const existingGuessedWords = guessedWords[lang][difficulty];
 
                     setGuessedWords(lang, difficulty, [...existingGuessedWords, wordToGuess()]);
                 }
+            };
+
+            if (prefersReducedMotion()) {
+                for (const indexOfGuessedLetter of indicesOfAllGuessedLetters) {
+                    revealLetterAtIndex(indexOfGuessedLetter, numberOfLetters);
+                }
+
+                finalizeValidation();
+
+                return;
             }
+
+            const revealStepDurationInMilliseconds = 220;
+            const flipHalfDurationInMilliseconds = 150;
+
+            indicesOfAllGuessedLetters.forEach((indexOfGuessedLetter, revealOrder) => {
+                const revealDelay = revealOrder * revealStepDurationInMilliseconds;
+
+                setTimeout((): void => {
+                    setFlippingTileIndices((previousIndices) => new Set(previousIndices).add(indexOfGuessedLetter));
+                }, revealDelay);
+
+                setTimeout((): void => {
+                    revealLetterAtIndex(indexOfGuessedLetter, numberOfLetters);
+                }, revealDelay + flipHalfDurationInMilliseconds);
+            });
+
+            const lastRevealDelay = (indicesOfAllGuessedLetters.length - 1) * revealStepDurationInMilliseconds;
+
+            setTimeout(finalizeValidation, lastRevealDelay + revealStepDurationInMilliseconds);
 
             return;
         }
@@ -239,6 +275,7 @@ const App: Component = () => {
 
         setCurrentWordToGuess(lang, difficulty, randomWord(lang, difficulty));
         setlettersToGuess(lang, difficulty, createEmptyLetters(5 * getNumberOfLetters()));
+        setFlippingTileIndices(new Set<number>());
     };
 
     const onClickChange = (): void => {
@@ -342,26 +379,31 @@ const App: Component = () => {
                             "grid-cols-7": currentDifficulty() === "hard"
                         }}>
                             <For each={lettersToGuess[currentLang()][currentDifficulty()]}>
-                                {(guessedLetter) => <span classList={{
-                                    "aspect-square": true,
-                                    "border": true,
-                                    "rounded-2xl": true,
-                                    "md:rounded-3xl": true,
-                                    "lg:rounded-2xl": true,
-                                    "flex": true,
-                                    "items-center": true,
-                                    "justify-center": true,
-                                    "text-3xl": true,
-                                    "md:text-4xl": true,
-                                    "lg:text-2xl": true,
-                                    "text-gray-600": true,
-                                    "border-gray-500": true,
-                                    "border-2": true,
-                                    "bg-slate-50": ["to-guess", "guessed"].includes(guessedLetter.state),
-                                    "bg-amber-200": guessedLetter.state === "misplaced",
-                                    "bg-slate-400": guessedLetter.state === "bad",
-                                    "bg-green-200": guessedLetter.state === "good",
-                                }}>{guessedLetter.value}</span>}
+                                {(guessedLetter, tileIndex) => <span
+                                    style={{ "--entrance-delay": `${tileIndex() * 25}ms` }}
+                                    classList={{
+                                        "aspect-square": true,
+                                        "border": true,
+                                        "rounded-2xl": true,
+                                        "md:rounded-3xl": true,
+                                        "lg:rounded-2xl": true,
+                                        "flex": true,
+                                        "items-center": true,
+                                        "justify-center": true,
+                                        "text-3xl": true,
+                                        "md:text-4xl": true,
+                                        "lg:text-2xl": true,
+                                        "text-gray-600": true,
+                                        "border-gray-500": true,
+                                        "border-2": true,
+                                        "letter-tile-appear": true,
+                                        "letter-tile-flip": flippingTileIndices().has(tileIndex()),
+                                        "bg-slate-50": ["to-guess", "guessed"].includes(guessedLetter.state),
+                                        "bg-amber-200": guessedLetter.state === "misplaced",
+                                        "bg-slate-400": guessedLetter.state === "bad",
+                                        "bg-green-200": guessedLetter.state === "good",
+                                    }}
+                                >{guessedLetter.value}</span>}
                             </For>
                         </div>
                     </div>

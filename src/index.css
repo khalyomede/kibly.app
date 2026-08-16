@@ -44,3 +44,48 @@ body * {
     background-position: center bottom;
     background-size: cover;
 }
+
+/* Letters appearing animation */
+@keyframes letter-tile-appear {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes letter-tile-flip {
+    0% {
+        transform: scaleY(1);
+    }
+
+    50% {
+        transform: scaleY(0.1);
+    }
+
+    100% {
+        transform: scaleY(1);
+    }
+}
+
+.letter-tile-appear {
+    animation: letter-tile-appear 240ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: var(--entrance-delay, 0ms);
+}
+
+.letter-tile-flip {
+    animation: letter-tile-flip 300ms ease-in-out;
+    animation-delay: 0ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .letter-tile-appear,
+    .letter-tile-flip {
+        animation: none;
+    }
+}
