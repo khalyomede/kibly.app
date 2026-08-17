@@ -90,7 +90,15 @@ const App: Component = () => {
 
     const [settingsOpen, setSettingsOpen] = createSignal(false);
     const [currentDifficulty, setCurrentDifficulty] = createLocalSignal("easy", "difficulty", (data: any): Difficulty => difficulty.parse(data));
-    const [currentLang, setCurrentLang] = createLocalSignal("en", "lang", (data: any) => lang.parse(data));
+    const [currentLang, setCurrentLang] = createLocalSignal("en", "lang", (data: any) => {
+        let savedLang = "en";
+
+        try {
+            savedLang = lang.parse(data);
+        } catch (error) { }
+
+        return savedLang as Lang;
+    });
     const [t, setLocale] = createI18n<Lang, Translation>(translations, currentLang());
     const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<string>>>>(
         {
