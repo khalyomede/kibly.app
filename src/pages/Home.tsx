@@ -15,6 +15,35 @@ const Home: Component = () => {
     const [currentLang, setCurrentLang] = createLocalSignal("en", "lang", (data: any) => lang.parse(data));
     const [t, setLocale] = createI18n<Lang, Translation>(translations, "en");
 
+    // Helpers
+    const triggerVibration = (): void => {
+        if (!vibrationEnabled())
+            return;
+
+        vibrate();
+    };
+
+    // Stores/signals
+    const [vibrationEnabled] = createLocalSignal(true, "vibrationEnabled", (data: any): boolean => z.boolean().parse(data));
+
+    // Events listeners
+    const onPlayClick = (): void => {
+        const path: string = "/play";
+        const supportsViewTransitions: boolean = typeof document.startViewTransition === "function";
+
+        triggerVibration();
+        setClickedPlay(true);
+
+        if (!supportsViewTransitions) {
+            navigate(path);
+
+            return;
+        }
+
+        document.startViewTransition(() => navigate(path));
+    };
+
+    // Main
     setLocale(currentLang());
 
     if (clickedPlay()) {
@@ -31,22 +60,6 @@ const Home: Component = () => {
             setLocale(browserLang);
         }
     }
-
-    const onPlayClick = (): void => {
-        const path: string = "/play";
-        const supportsViewTransitions: boolean = typeof document.startViewTransition === "function";
-
-        vibrate();
-        setClickedPlay(true);
-
-        if (!supportsViewTransitions) {
-            navigate(path);
-
-            return;
-        }
-
-        document.startViewTransition(() => navigate(path));
-    };
 
     return <div class="min-h-screen bg-orange-50 flex items-center justify-center flex-col gap-4 md:gap-8">
         <Logo class="w-70 lg:w-80 h-auto" />

@@ -15,6 +15,9 @@ const translations: Record<Lang, Translation> = {
         "Easy": (): string => "Easy",
         "Medium": (): string => "Medium",
         "Hard": (): string => "Hard",
+        "Vibration": (): string => "Vibration",
+        "Sound": (): string => "Sound",
+        "Controls": (): string => "Controls",
     },
     "es": {
         "Play now": (): string => "Jugar ahora",
@@ -30,6 +33,9 @@ const translations: Record<Lang, Translation> = {
         "Easy": (): string => "Fácil",
         "Medium": (): string => "Medio",
         "Hard": (): string => "Difícil",
+        "Vibration": (): string => "Vibración",
+        "Sound": (): string => "Sonido",
+        "Controls": (): string => "Controles",
     },
     "fr": {
         "Play now": (): string => "Jouer maintenant",
@@ -45,6 +51,9 @@ const translations: Record<Lang, Translation> = {
         "Easy": (): string => "Facile",
         "Medium": (): string => "Moyen",
         "Hard": (): string => "Dur",
+        "Vibration": (): string => "Vibration",
+        "Sound": (): string => "Son",
+        "Controls": (): string => "Contrôles",
     },
 };
 

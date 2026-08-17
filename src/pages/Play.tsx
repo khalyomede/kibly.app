@@ -1,7 +1,7 @@
 import { For, Index, Match, Show, Switch, createSignal, type Component } from 'solid-js';
 import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, prefersReducedMotion, vibrate } from "../helpers";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
-import Logo from '../components/Logo';
+import { Logo, ToggleSwitch } from '../components';
 import backgroundImage from "../images/kibby-background.png";
 import { Difficulty, Lang, LetterState, Translation } from "../types";
 import { Letter } from "../interfaces";
@@ -58,6 +58,13 @@ const App: Component = () => {
         });
     };
 
+    const triggerVibration = (): void => {
+        if (!vibrationEnabled())
+            return;
+
+        vibrate();
+    };
+
     // Stores/signals
     const [flippingTileIndices, setFlippingTileIndices] = createSignal<Set<number>>(new Set());
     const [lettersToGuess, setlettersToGuess] = createLocalStore<Record<Lang, Record<Difficulty, Array<Letter>>>>(
@@ -99,6 +106,8 @@ const App: Component = () => {
 
         return savedLang as Lang;
     });
+    const [vibrationEnabled, setVibrationEnabled] = createLocalSignal(true, "vibrationEnabled", (data: any): boolean => z.boolean().parse(data));
+    const [soundEnabled, setSoundEnabled] = createLocalSignal(true, "soundEnabled", (data: any): boolean => z.boolean().parse(data));
     const [t, setLocale] = createI18n<Lang, Translation>(translations, currentLang());
     const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<string>>>>(
         {
@@ -183,7 +192,7 @@ const App: Component = () => {
                 return;
             }
 
-            vibrate();
+            triggerVibration();
 
             const indicesOfAllGuessedLetters: Array<number> = lettersToGuessForCurrentDifficulty
                 .map((letter, index) => letter.state === "guessed" ? index : null)
@@ -237,7 +246,7 @@ const App: Component = () => {
                 return;
             }
 
-            vibrate();
+            triggerVibration();
 
             const indexOfLastGuessedLetter = lettersToGuessForCurrentDifficulty.findLastIndex((letter) => letter.state === "guessed");
 
@@ -256,7 +265,7 @@ const App: Component = () => {
                 return;
             }
 
-            vibrate();
+            triggerVibration();
 
             const indexOfNextLetterToGuess: number = lettersToGuessForCurrentDifficulty.findIndex((letter) => letter.state === "to-guess");
             const indexInWordToGuess: number = indexOfNextLetterToGuess % numberOfLetters;
@@ -275,7 +284,7 @@ const App: Component = () => {
             return;
         }
 
-        vibrate();
+        triggerVibration();
 
         const indexOfNextLetterToGuess: number = lettersToGuessForCurrentDifficulty.findIndex((letter) => letter.state === "to-guess");
         let nextLetterToGuess: Letter = lettersToGuessForCurrentDifficulty[indexOfNextLetterToGuess];
@@ -292,7 +301,7 @@ const App: Component = () => {
         const lang: Lang = currentLang();
         const difficulty: Difficulty = currentDifficulty();
 
-        vibrate();
+        triggerVibration();
         setCurrentWordToGuess(lang, difficulty, randomWord(lang, difficulty));
         setlettersToGuess(lang, difficulty, createEmptyLetters(5 * getNumberOfLetters()));
         setFlippingTileIndices(new Set<number>());
@@ -309,23 +318,31 @@ const App: Component = () => {
     };
 
     const onClickSettings = (): void => {
-        vibrate();
+        triggerVibration();
         setSettingsOpen(true);
     };
 
     const onClickCloseSettings = (): void => {
-        vibrate();
+        triggerVibration();
         setSettingsOpen(false);
     };
 
     const onClickSaveLang = (lang: Lang): void => {
-        vibrate();
+        triggerVibration();
         saveLang(lang);
     };
 
     const onClickSaveDifficulty = (difficulty: Difficulty): void => {
-        vibrate();
+        triggerVibration();
         saveDifficulty(difficulty);
+    };
+
+    const onClickToggleVibration = (): void => {
+        setVibrationEnabled((previousValue) => !previousValue);
+    };
+
+    const onClickToggleSound = (): void => {
+        setSoundEnabled((previousValue) => !previousValue);
     };
 
     // Derived
@@ -554,7 +571,7 @@ const App: Component = () => {
                             </div>
 
                             {/* Difficulty */}
-                            <div>
+                            <div class="mb-6">
                                 <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">Difficulty</div>
                                 <div class="grid grid-cols-3 gap-2">
                                     <For each={difficulties}>
@@ -579,6 +596,23 @@ const App: Component = () => {
                                             </Switch>
                                         </button>}
                                     </For>
+                                </div>
+                            </div>
+
+                            {/* Vibration / Sound */}
+                            <div>
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">{t("Controls")}</div>
+                                <div class="flex flex-col gap-4">
+                                    <ToggleSwitch
+                                        label={t("Vibration")}
+                                        isChecked={vibrationEnabled()}
+                                        onToggle={onClickToggleVibration}
+                                    />
+                                    <ToggleSwitch
+                                        label={t("Sound")}
+                                        isChecked={soundEnabled()}
+                                        onToggle={onClickToggleSound}
+                                    />
                                 </div>
                             </div>
                             {/* Future controls (theme, history, ...) can be added here as new sections */}

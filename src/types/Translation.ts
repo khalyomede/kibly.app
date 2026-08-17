@@ -12,6 +12,9 @@ interface Translation {
     "Easy": () => string;
     "Medium": () => string;
     "Hard": () => string;
+    "Vibration": () => string;
+    "Sound": () => string;
+    "Controls": () => string;
 };
 
 export default Translation;
