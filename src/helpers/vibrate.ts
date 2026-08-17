@@ -1,9 +1,9 @@
-const vibrate = (durationInMilliseconds: number = 15): void => {
+const vibrate = (durationInMillisecondsOrPattern: number | Array<number> = 15): void => {
     if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") {
         return;
     }
 
-    navigator.vibrate(durationInMilliseconds);
+    navigator.vibrate(durationInMillisecondsOrPattern);
 };
 
 export default vibrate;

@@ -186,6 +186,9 @@ const App: Component = () => {
                     const existingGuessedWords = guessedWords[lang][difficulty];
 
                     setGuessedWords(lang, difficulty, [...existingGuessedWords, wordToGuess()]);
+                    vibrate([40, 60, 40, 60, 80]);
+
+                    return;
                 }
             };
 
