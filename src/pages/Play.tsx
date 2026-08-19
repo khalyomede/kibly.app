@@ -8,10 +8,15 @@ import { Letter } from "../interfaces";
 import { difficulties, keyboard, langs, translations, words } from "../data";
 import { difficulty, lang, letter } from "../definitions";
 import { createI18n } from "../packages/i18n";
+import { success as successSound } from "../sounds";
 import * as z from "zod";
 
 const App: Component = () => {
     const langLabels: Record<Lang, string> = { en: "English", es: "Español", fr: "Français" };
+    const successAudio = new Audio(successSound);
+
+    successAudio.preload = "auto";
+    successAudio.load();
 
     // Helpers
     const randomWord = (lang: Lang, difficulty: Difficulty): string => {
@@ -63,6 +68,49 @@ const App: Component = () => {
             return;
 
         vibrate();
+    };
+
+    let audioContext: AudioContext | undefined;
+
+    const playBubble = (): void => {
+        if (!soundEnabled()) {
+            return;
+        }
+
+        if (!audioContext) {
+            audioContext = new AudioContext();
+        }
+
+        if (audioContext.state === "suspended") {
+            void audioContext.resume();
+        }
+
+        const now = audioContext.currentTime;
+
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const filter = audioContext.createBiquadFilter();
+
+        oscillator.type = "sine";
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(3200, now);
+        filter.Q.setValueAtTime(0.7, now);
+
+        // Quick upward "blip" then a soft downward tail — gives it a rounder, bubblier pop
+        oscillator.frequency.setValueAtTime(650, now);
+        oscillator.frequency.exponentialRampToValueAtTime(1500, now + 0.035);
+        oscillator.frequency.exponentialRampToValueAtTime(950, now + 0.09);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.28, now + 0.008);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.11);
+
+        oscillator.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioContext.destination);
+
+        oscillator.start(now);
+        oscillator.stop(now + 0.11);
     };
 
     // Stores/signals
@@ -193,6 +241,7 @@ const App: Component = () => {
             }
 
             triggerVibration();
+            playBubble();
 
             const indicesOfAllGuessedLetters: Array<number> = lettersToGuessForCurrentDifficulty
                 .map((letter, index) => letter.state === "guessed" ? index : null)
@@ -200,6 +249,11 @@ const App: Component = () => {
 
             const finalizeValidation = (): void => {
                 if (gameWon()) {
+                    if (soundEnabled()) {
+                        successAudio.currentTime = 0;
+                        void successAudio.play();
+                    }
+
                     const existingGuessedWords = guessedWords[lang][difficulty];
 
                     setGuessedWords(lang, difficulty, [...existingGuessedWords, wordToGuess()]);
@@ -247,6 +301,7 @@ const App: Component = () => {
             }
 
             triggerVibration();
+            playBubble();
 
             const indexOfLastGuessedLetter = lettersToGuessForCurrentDifficulty.findLastIndex((letter) => letter.state === "guessed");
 
@@ -266,6 +321,7 @@ const App: Component = () => {
             }
 
             triggerVibration();
+            playBubble();
 
             const indexOfNextLetterToGuess: number = lettersToGuessForCurrentDifficulty.findIndex((letter) => letter.state === "to-guess");
             const indexInWordToGuess: number = indexOfNextLetterToGuess % numberOfLetters;
@@ -285,6 +341,7 @@ const App: Component = () => {
         }
 
         triggerVibration();
+        playBubble();
 
         const indexOfNextLetterToGuess: number = lettersToGuessForCurrentDifficulty.findIndex((letter) => letter.state === "to-guess");
         let nextLetterToGuess: Letter = lettersToGuessForCurrentDifficulty[indexOfNextLetterToGuess];

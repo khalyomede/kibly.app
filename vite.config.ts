@@ -16,12 +16,12 @@ export default defineConfig({
         VitePWA({
             registerType: 'autoUpdate',
             workbox: {
-                globPatterns: ['**/*.{js,css,html,png}'],
+                globPatterns: ['**/*.{js,css,html,png,wav,webp,avif,ico,jpg,jpeg}'],
                 runtimeCaching: [
                     // Images (Apps icons)
                     {
                         handler: "CacheFirst",
-                        urlPattern: /.*\.(webp|avif|png|ico|jpg|jpeg)$/,
+                        urlPattern: /.*\.(webp|avif|png|ico|jpg|jpeg|wav)$/,
                         method: "GET",
                     },
                     // Fonts (Google fonts, Fontawesome, ...)
