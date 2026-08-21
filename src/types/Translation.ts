@@ -15,6 +15,7 @@ interface Translation {
     "Vibration": () => string;
     "Sound": () => string;
     "Controls": () => string;
+    "{count} hints used": (count: number) => string;
 };
 
 export default Translation;

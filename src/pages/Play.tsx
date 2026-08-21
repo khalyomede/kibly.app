@@ -1,8 +1,8 @@
 import { For, Index, Match, Show, Switch, createSignal, type Component } from 'solid-js';
-import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, prefersReducedMotion, vibrate } from "../helpers";
+import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, prefersColorSchemeDark, prefersReducedMotion, vibrate } from "../helpers";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import { Logo, ToggleSwitch } from '../components';
-import backgroundImage from "../images/kibby-background.png";
+import { kibbyBackground, kibbyBackgroundDark } from "../images";
 import { Difficulty, Lang, LetterState, Translation } from "../types";
 import { Letter } from "../interfaces";
 import { difficulties, keyboard, langs, translations, words } from "../data";
@@ -206,6 +206,26 @@ const App: Component = () => {
             )
         ).parse(data)
     );
+    const [numberOfHintsUsed, setNumberOfHintsUsed] = createLocalStore<Record<Lang, Record<Difficulty, number>>>({
+        "en": {
+            "easy": 0,
+            "medium": 0,
+            "hard": 0,
+        },
+        "es": {
+            "easy": 0,
+            "medium": 0,
+            "hard": 0,
+        },
+        "fr": {
+            "easy": 0,
+            "medium": 0,
+            "hard": 0,
+        },
+    },
+        "numberOfHintsUsed",
+        (data: any) => z.record(lang, z.record(difficulty, z.number())).parse(data)
+    );
 
     // Event listeners
     const saveDifficulty = (difficulty: string): void => {
@@ -331,6 +351,8 @@ const App: Component = () => {
                 value: wordToGuess()[indexInWordToGuess],
             });
 
+            setNumberOfHintsUsed(lang, difficulty, numberOfHintsUsed[lang][difficulty] + 1);
+
             return;
         }
 
@@ -362,6 +384,7 @@ const App: Component = () => {
         setCurrentWordToGuess(lang, difficulty, randomWord(lang, difficulty));
         setlettersToGuess(lang, difficulty, createEmptyLetters(5 * getNumberOfLetters()));
         setFlippingTileIndices(new Set<number>());
+        setNumberOfHintsUsed(lang, difficulty, 0);
     };
 
     const onClickChange = (): void => {
@@ -457,7 +480,7 @@ const App: Component = () => {
 
     return (
         <div class="play-page min-h-dvh bg-orange-50 flex justify-center" style={{
-            "background-image": `url(${backgroundImage})`,
+            "background-image": prefersColorSchemeDark() ? `url(${kibbyBackgroundDark})` : `url(${kibbyBackground})`,
         }}>
             <div class="h-dvh flex flex-col w-full md:max-w-xl md:mx-auto lg:max-w-sm">
                 {/* Header */}
@@ -471,7 +494,7 @@ const App: Component = () => {
                         type="button"
                         onClick={onClickSettings}
                         aria-label="Open settings"
-                        class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 text-slate-600 bg-white/70 md:w-11 md:h-11 hover:cursor-pointer"
+                        class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 md:w-11 md:h-11 hover:cursor-pointer"
                     >
                         <Settings width="18" height="18" />
                     </button>
@@ -508,14 +531,19 @@ const App: Component = () => {
                                         "md:text-4xl": true,
                                         "lg:text-2xl": true,
                                         "text-gray-600": true,
+                                        "dark:text-gray-300": true,
                                         "border-gray-500": true,
                                         "border-2": true,
                                         "letter-tile-appear": true,
                                         "letter-tile-flip": flippingTileIndices().has(tileIndex()),
                                         "bg-slate-50": ["to-guess", "guessed"].includes(guessedLetter.state),
+                                        "dark:bg-slate-400": ["to-guess", "guessed"].includes(guessedLetter.state),
                                         "bg-amber-200": guessedLetter.state === "misplaced",
+                                        "dark:bg-amber-600": guessedLetter.state === "misplaced",
                                         "bg-slate-400": guessedLetter.state === "bad",
+                                        "dark:bg-slate-700": guessedLetter.state === "bad",
                                         "bg-green-200": guessedLetter.state === "good",
+                                        "dark:bg-green-600": guessedLetter.state === "good",
                                     }}
                                 >{guessedLetter.value}</span>}
                             </For>
@@ -525,13 +553,13 @@ const App: Component = () => {
                     <div class="flex justify-center mb-4 md:my-8 lg:my-6">
                         <Switch>
                             <Match when={gameFinished()}>
-                                <button onClick={onClickReplay} class="px-6 py-1 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
+                                <button onClick={onClickReplay} class="px-6 py-2 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 dark:border-sky-700 text-slate-700 dark:text-sky-200 bg-slate-100 dark:bg-sky-800 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
                                     <span>{t("Replay")}</span>
                                     <RefreshCcw width="16" height="16" />
                                 </button>
                             </Match>
                             <Match when={!gameFinished()}>
-                                <button onClick={onClickChange} class="px-6 py-1 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 text-slate-700 bg-slate-100 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
+                                <button onClick={onClickChange} class="px-6 py-2 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 dark:border-sky-700 text-slate-700 dark:text-sky-200 bg-slate-100 dark:bg-sky-800 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
                                     <span>{t("Change")}</span>
                                     <RefreshCw width="16" height="16" />
                                 </button>
@@ -556,10 +584,16 @@ const App: Component = () => {
                                     "border-2": true,
                                     "hover:cursor-pointer": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
                                     "border-slate-500": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
+                                    "dark:border-sky-500": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
                                     "bg-slate-50": !bannedLetters().includes(key()),
+                                    "dark:bg-sky-600": (!["DELETE", "ENTER", "HINT"].includes(key())) && !bannedLetters().includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
+                                    "dark:bg-sky-800": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()),
                                     "bg-slate-400": bannedLetters().includes(key()),
+                                    "dark:bg-sky-900": bannedLetters().includes(key()),
                                     "text-slate-600": !["DELETE", "ENTER", "HINT"].includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
+                                    "dark:text-sky-100": !["DELETE", "ENTER", "HINT"].includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
                                     "text-slate-300": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()),
+                                    "dark:text-sky-900": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()),
                                     "text-lg": true,
                                     "md:text-xl": true,
                                     "aspect-square": key() !== "HINT",
@@ -575,13 +609,16 @@ const App: Component = () => {
                         </footer>
                     </Match>
                     <Match when={gameLost()}>
-                        <footer class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6">
+                        <footer class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6 dark:text-sky-200">
                             <span class="tracking-wide">{t("Word was: {word}", wordToGuess())}</span>
                         </footer>
                     </Match>
                     <Match when={gameWon()}>
-                        <footer class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6">
-                            <span class="tracking-wide">{t("You found it!")}</span>
+                        <footer class="flex flex-col items-center justify-center gap-2 text-xl md:text-2xl py-6 text-orange-900 dark:text-sky-200">
+                            <div class="tracking-wide">{t("You found it!")}</div>
+                            <Show when={numberOfHintsUsed[currentLang()][currentDifficulty()] > 0}>
+                                <div class="text-sm text-orange-700 dark:text-sky-500">{t("{count} hints used", numberOfHintsUsed[currentLang()][currentDifficulty()])}</div>
+                            </Show>
                         </footer>
                     </Match>
                 </Switch>
@@ -590,15 +627,15 @@ const App: Component = () => {
                 <Show when={settingsOpen()}>
                     <div class="fixed inset-0 z-50 flex flex-col justify-end md:items-center md:justify-center" role="dialog" aria-modal="true" aria-label="Settings">
                         <div class="sheet-backdrop absolute inset-0 bg-slate-900/40" onClick={() => setSettingsOpen(false)}></div>
-                        <div class="sheet-panel relative bg-orange-50 rounded-t-3xl border-t-2 border-slate-200 px-5 pt-3 pb-8 shadow-2xl md:w-full md:max-w-md md:rounded-3xl md:border md:border-t-2 md:px-8 md:py-8">
-                            <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300 md:hidden"></div>
+                        <div class="sheet-panel relative bg-orange-50 dark:bg-sky-800 rounded-t-3xl border-t-2 border-slate-200 dark:border-sky-950 px-5 pt-3 pb-8 shadow-2xl md:w-full md:max-w-md md:rounded-3xl md:border md:border-t-2 md:px-8 md:py-8">
+                            <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300 dark:bg-sky-950 md:hidden"></div>
                             <div class="flex items-center mb-6">
-                                <h2 class="grow text-lg text-slate-700 tracking-wide md:text-xl">{t("Settings")}</h2>
+                                <h2 class="grow text-lg text-slate-700 dark:text-sky-50 tracking-wide md:text-xl">{t("Settings")}</h2>
                                 <button
                                     type="button"
                                     onClick={onClickCloseSettings}
                                     aria-label="Close settings"
-                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 border-2 border-slate-200"
+                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 dark:text-sky-950 border-2 border-slate-200 dark:border-sky-950"
                                 >
                                     <X width="18" height="18" />
                                 </button>
@@ -606,7 +643,7 @@ const App: Component = () => {
 
                             {/* Language */}
                             <div class="mb-6">
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">Language</div>
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-100">Language</div>
                                 <div class="grid grid-cols-3 gap-2">
                                     <For each={langs}>
                                         {(lang) => <button
@@ -629,7 +666,7 @@ const App: Component = () => {
 
                             {/* Difficulty */}
                             <div class="mb-6">
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">Difficulty</div>
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-100">Difficulty</div>
                                 <div class="grid grid-cols-3 gap-2">
                                     <For each={difficulties}>
                                         {(difficulty) => <button
@@ -658,7 +695,7 @@ const App: Component = () => {
 
                             {/* Vibration / Sound */}
                             <div>
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400">{t("Controls")}</div>
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-100">{t("Controls")}</div>
                                 <div class="flex flex-col gap-4">
                                     <ToggleSwitch
                                         label={t("Vibration")}

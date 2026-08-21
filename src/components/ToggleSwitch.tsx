@@ -9,7 +9,7 @@ interface ToggleSwitchProperties {
 const ToggleSwitch: Component<ToggleSwitchProperties> = (properties) => {
     return (
         <div class="flex items-center justify-between">
-            <span class="text-sm text-slate-600 tracking-wide">{properties.label}</span>
+            <span class="text-sm text-slate-600 dark:text-sky-200 tracking-wide">{properties.label}</span>
             <button
                 type="button"
                 role="switch"

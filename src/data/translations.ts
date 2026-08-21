@@ -18,6 +18,7 @@ const translations: Record<Lang, Translation> = {
         "Vibration": (): string => "Vibration",
         "Sound": (): string => "Sound",
         "Controls": (): string => "Controls",
+        "{count} hints used": (count: number) => count === 1 ? `${count} hint used` : `${count} hints used`,
     },
     "es": {
         "Play now": (): string => "Jugar ahora",
@@ -36,6 +37,7 @@ const translations: Record<Lang, Translation> = {
         "Vibration": (): string => "Vibración",
         "Sound": (): string => "Sonido",
         "Controls": (): string => "Controles",
+        "{count} hints used": (count: number) => count === 1 ? `${count} pista utilizadas` : `${count} pistas utilizadas`,
     },
     "fr": {
         "Play now": (): string => "Jouer maintenant",
@@ -54,6 +56,7 @@ const translations: Record<Lang, Translation> = {
         "Vibration": (): string => "Vibration",
         "Sound": (): string => "Son",
         "Controls": (): string => "Contrôles",
+        "{count} hints used": (count: number) => count === 1 ? `${count} indice utilisé` : `${count} indices utilisés`,
     },
 };
 
