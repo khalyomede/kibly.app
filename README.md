@@ -35,37 +35,36 @@ You can deploy the `dist` folder to any static host provider (netlify, surge, no
 
 ## This project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)
 
-
 ## Re-format images
 
 ### Logo (horizontal)
 
 ```bash
-docker compose run --rm magick src/images/kibby-logo.png -define webp:lossless=true src/images/kibby-logo.webp
+docker compose run --rm magick src/images/kibly-logo.png -define webp:lossless=true src/images/kibly-logo.webp
 
-docker compose run --rm magick src/images/kibby-logo.png -resize 390x -define webp:lossless=true src/images/kibby-logo-mobile.webp
-docker compose run --rm magick src/images/kibby-logo.png -resize 769x -define webp:lossless=true src/images/kibby-logo-tablet.webp
-docker compose run --rm magick src/images/kibby-logo.png -resize 1024x -define webp:lossless=true src/images/kibby-logo-laptop.webp
-docker compose run --rm magick src/images/kibby-logo.png -resize 1440x -define webp:lossless=true src/images/kibby-logo-desktop.webp
+docker compose run --rm magick src/images/kibly-logo.png -resize 390x -define webp:lossless=true src/images/kibly-logo-mobile.webp
+docker compose run --rm magick src/images/kibly-logo.png -resize 769x -define webp:lossless=true src/images/kibly-logo-tablet.webp
+docker compose run --rm magick src/images/kibly-logo.png -resize 1024x -define webp:lossless=true src/images/kibly-logo-laptop.webp
+docker compose run --rm magick src/images/kibly-logo.png -resize 1440x -define webp:lossless=true src/images/kibly-logo-desktop.webp
 
-docker compose run --rm magick src/images/kibby-logo.png -resize 390x src/images/kibby-logo-mobile.png
-docker compose run --rm magick src/images/kibby-logo.png -resize 769x src/images/kibby-logo-tablet.png
-docker compose run --rm magick src/images/kibby-logo.png -resize 1024x src/images/kibby-logo-laptop.png
-docker compose run --rm magick src/images/kibby-logo.png -resize 1440x src/images/kibby-logo-desktop.png
+docker compose run --rm magick src/images/kibly-logo.png -resize 390x src/images/kibly-logo-mobile.png
+docker compose run --rm magick src/images/kibly-logo.png -resize 769x src/images/kibly-logo-tablet.png
+docker compose run --rm magick src/images/kibly-logo.png -resize 1024x src/images/kibly-logo-laptop.png
+docker compose run --rm magick src/images/kibly-logo.png -resize 1440x src/images/kibly-logo-desktop.png
 ```
 
 ### Icon (favicon, app icon)
 
 ```bash
-docker compose run --rm magick public/icons/kibby-icon.png -resize 1024x1024 public/icons/kibby-icon-1024.png
-docker compose run --rm magick public/icons/kibby-icon.png -resize 512x512 public/icons/kibby-icon-512.png
-docker compose run --rm magick public/icons/kibby-icon.png -resize 192x192 public/icons/kibby-icon-192.png
+docker compose run --rm magick public/icons/kibly-icon.png -resize 1024x1024 public/icons/kibly-icon-1024.png
+docker compose run --rm magick public/icons/kibly-icon.png -resize 512x512 public/icons/kibly-icon-512.png
+docker compose run --rm magick public/icons/kibly-icon.png -resize 192x192 public/icons/kibly-icon-192.png
 
-docker compose run --rm magick public/icons/kibby-maskable-icon.png -resize 1024x1024 public/icons/kibby-maskable-icon-1024.png
-docker compose run --rm magick public/icons/kibby-maskable-icon.png -resize 512x512 public/icons/kibby-maskable-icon-512.png
-docker compose run --rm magick public/icons/kibby-maskable-icon.png -resize 192x192 public/icons/kibby-maskable-icon-192.png
+docker compose run --rm magick public/icons/kibly-maskable-icon.png -resize 1024x1024 public/icons/kibly-maskable-icon-1024.png
+docker compose run --rm magick public/icons/kibly-maskable-icon.png -resize 512x512 public/icons/kibly-maskable-icon-512.png
+docker compose run --rm magick public/icons/kibly-maskable-icon.png -resize 192x192 public/icons/kibly-maskable-icon-192.png
 
-docker compose run --rm magick public/icons/kibby-maskable-duo-tone-icon.png -resize 1024x1024 public/icons/kibby-maskable-duo-tone-icon-1024.png
-docker compose run --rm magick public/icons/kibby-maskable-duo-tone-icon.png -resize 512x512 public/icons/kibby-maskable-duo-tone-icon-512.png
-docker compose run --rm magick public/icons/kibby-maskable-duo-tone-icon.png -resize 192x192 public/icons/kibby-maskable-duo-tone-icon-192.png
+docker compose run --rm magick public/icons/kibly-maskable-duo-tone-icon.png -resize 1024x1024 public/icons/kibly-maskable-duo-tone-icon-1024.png
+docker compose run --rm magick public/icons/kibly-maskable-duo-tone-icon.png -resize 512x512 public/icons/kibly-maskable-duo-tone-icon-512.png
+docker compose run --rm magick public/icons/kibly-maskable-duo-tone-icon.png -resize 192x192 public/icons/kibly-maskable-duo-tone-icon-192.png
 ```

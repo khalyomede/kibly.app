@@ -1,7 +1,7 @@
-import kibbyBackground from "./kibby-background.png";
-import kibbyBackgroundDark from "./kibby-background-dark.png";
+import kiblyBackground from "./kibly-background.png";
+import kiblyBackgroundDark from "./kibly-background-dark.png";
 
 export {
-    kibbyBackground,
-    kibbyBackgroundDark,
+    kiblyBackground,
+    kiblyBackgroundDark,
 };

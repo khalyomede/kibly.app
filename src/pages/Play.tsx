@@ -1,8 +1,8 @@
 import { For, Index, Match, Show, Switch, createSignal, type Component } from 'solid-js';
-import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, prefersColorSchemeDark, prefersReducedMotion, vibrate } from "../helpers";
+import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, createPrefersDarkTheme, prefersReducedMotion, vibrate } from "../helpers";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import { Logo, ToggleSwitch } from '../components';
-import { kibbyBackground, kibbyBackgroundDark } from "../images";
+import { kiblyBackground, kiblyBackgroundDark } from "../images";
 import { Difficulty, Lang, LetterState, Translation } from "../types";
 import { Letter } from "../interfaces";
 import { difficulties, keyboard, langs, translations, words } from "../data";
@@ -14,6 +14,7 @@ import * as z from "zod";
 const App: Component = () => {
     const langLabels: Record<Lang, string> = { en: "English", es: "Español", fr: "Français" };
     const successAudio = new Audio(successSound);
+    const prefersDarkTheme = createPrefersDarkTheme();
 
     successAudio.preload = "auto";
     successAudio.load();
@@ -480,7 +481,7 @@ const App: Component = () => {
 
     return (
         <div class="play-page min-h-dvh bg-orange-50 flex justify-center" style={{
-            "background-image": prefersColorSchemeDark() ? `url(${kibbyBackgroundDark})` : `url(${kibbyBackground})`,
+            "background-image": prefersDarkTheme() ? `url(${kiblyBackgroundDark})` : `url(${kiblyBackground})`,
         }}>
             <div class="h-dvh flex flex-col w-full md:max-w-xl md:mx-auto lg:max-w-sm">
                 {/* Header */}
@@ -537,7 +538,7 @@ const App: Component = () => {
                                         "letter-tile-appear": true,
                                         "letter-tile-flip": flippingTileIndices().has(tileIndex()),
                                         "bg-slate-50": ["to-guess", "guessed"].includes(guessedLetter.state),
-                                        "dark:bg-slate-400": ["to-guess", "guessed"].includes(guessedLetter.state),
+                                        "dark:bg-slate-500": ["to-guess", "guessed"].includes(guessedLetter.state),
                                         "bg-amber-200": guessedLetter.state === "misplaced",
                                         "dark:bg-amber-600": guessedLetter.state === "misplaced",
                                         "bg-slate-400": guessedLetter.state === "bad",

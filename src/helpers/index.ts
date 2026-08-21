@@ -3,7 +3,7 @@ import createLocalStore from "./create-local-store";
 import createLocalSignal from "./create-local-signal";
 import numberBetween from "./number-between";
 import prefersReducedMotion from "./prefers-reduced-motion";
-import prefersColorSchemeDark from "./prefers-color-scheme-dark";
+import createPrefersDarkTheme from "./create-prefers-dark-theme";
 import vibrate from "./vibrate";
 
 export {
@@ -12,6 +12,6 @@ export {
     createLocalSignal,
     numberBetween,
     prefersReducedMotion,
-    prefersColorSchemeDark,
+    createPrefersDarkTheme,
     vibrate,
 };
