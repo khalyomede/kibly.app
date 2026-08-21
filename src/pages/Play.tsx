@@ -154,8 +154,8 @@ const App: Component = () => {
 
         return savedLang as Lang;
     });
-    const [vibrationEnabled, setVibrationEnabled] = createLocalSignal(true, "vibrationEnabled", (data: any): boolean => z.boolean().parse(data));
-    const [soundEnabled, setSoundEnabled] = createLocalSignal(true, "soundEnabled", (data: any): boolean => z.boolean().parse(data));
+    const [vibrationEnabled, setVibrationEnabled] = createLocalSignal(false, "vibrationEnabled", (data: any): boolean => z.boolean().parse(data));
+    const [soundEnabled, setSoundEnabled] = createLocalSignal(false, "soundEnabled", (data: any): boolean => z.boolean().parse(data));
     const [t, setLocale] = createI18n<Lang, Translation>(translations, currentLang());
     const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<string>>>>(
         {
