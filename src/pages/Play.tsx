@@ -1,20 +1,129 @@
-import { For, Index, Match, Show, Switch, createSignal, type Component } from 'solid-js';
+import { For, Index, Match, Show, Switch, createSignal, onMount, type Component } from 'solid-js';
 import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, createPrefersDarkTheme, prefersReducedMotion, vibrate } from "../helpers";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import { Logo, ToggleSwitch } from '../components';
 import { kiblyBackground, kiblyBackgroundDark } from "../images";
-import { Difficulty, Lang, LetterState, Translation } from "../types";
+import { Difficulty, Key, Lang, LetterState, Translation } from "../types";
 import { Letter } from "../interfaces";
 import { difficulties, keyboard, langs, translations, words } from "../data";
 import { difficulty, lang, letter } from "../definitions";
 import { createI18n } from "../packages/i18n";
 import { success as successSound } from "../sounds";
+import { Driver, driver, DriveStep } from "driver.js";
+import "driver.js/dist/driver.css";
 import * as z from "zod";
 
 const App: Component = () => {
+    // Refs
+    let grid!: HTMLDivElement;
+    let keyboardElement!: HTMLElement;
+    let settingsElement!: HTMLButtonElement;
+
+    // Others
     const langLabels: Record<Lang, string> = { en: "English", es: "Español", fr: "Français" };
     const successAudio = new Audio(successSound);
     const prefersDarkTheme = createPrefersDarkTheme();
+    let driverObj: Driver | null = null;
+
+    onMount(() => {
+        const lang: Lang = currentLang();
+        const difficulty: Difficulty = currentDifficulty();
+        let word: string = "";
+
+        if (lang === "en") {
+            word = "BREAD";
+        } else if (lang === "es") {
+            word = "PIANO";
+        } else if (lang === "fr") {
+            word = "LIVRE";
+        }
+
+        onClickReplay();
+        setCurrentWordToGuess(lang, difficulty, word);
+
+        driverObj = driver({
+            showProgress: true,
+            allowClose: false,
+            onDoneClick: () => {
+                setTutorialCompleted(true);
+                driverObj?.moveNext();
+            },
+            steps: [
+                { popover: { title: 'Welcome!', description: 'This quick guide will show you how to play.' } },
+                { element: grid, popover: { title: 'Grid', description: 'The grid displays the letters you typed.' } },
+                { element: keyboardElement, disableActiveInteraction: true, popover: { title: 'Keyboard', description: 'The keyboard allows you to guess the word by guessing it letter by letter.' } },
+                createTryItStep("B"),
+                createTryItStep("O"),
+                createTryItStep("A"),
+                createTryItStep("R"),
+                createTryItStep("D"),
+                {
+                    element: '#keyboard-ENTER',
+                    onHighlightStarted: () => {
+                        setExpectedTutorialKey("ENTER");
+                    },
+                    popover: {
+                        title: 'Validate',
+                        description: 'See if you guessed the correct word.',
+                        onNextClick: () => {
+                            // Force the first row to be the word, in case the user finds a way out.
+                            const letters: Array<string> = ["B", "O", "A", "R", "D"];
+                            let letterIndex = 0;
+
+                            for (const letter of letters) {
+                                setlettersToGuess(lang, difficulty, letterIndex, {
+                                    state: "guessed",
+                                    value: letter
+                                });
+                            }
+
+                            onKeyboardClick("ENTER");
+
+                            driverObj?.moveNext();
+                        },
+                        onPrevClick: () => {
+                            setlettersToGuess(lang, difficulty, 0, {
+                                state: "guessed",
+                                value: "B",
+                            });
+                            setlettersToGuess(lang, difficulty, 1, {
+                                state: "guessed",
+                                value: "O",
+                            });
+                            setlettersToGuess(lang, difficulty, 2, {
+                                state: "guessed",
+                                value: "A",
+                            });
+                            setlettersToGuess(lang, difficulty, 3, {
+                                state: "guessed",
+                                value: "R",
+                            });
+                            setlettersToGuess(lang, difficulty, 4, {
+                                state: "guessed",
+                                value: "D",
+                            });
+
+                            setExpectedTutorialKey(null);
+
+                            driverObj?.movePrevious();
+                        },
+                    },
+                },
+                { element: grid, popover: { title: 'Good first guess!', description: "Let's see what the colors mean", disableButtons: ["previous"] } },
+                { element: '#grid-0', popover: { title: 'Good', description: 'A letter that is perfectly placed will be colored in green.' } },
+                { element: '#grid-1', popover: { title: 'Wrong', description: 'A letter that is not in the word to guess will appear in grey.' } },
+                { element: '#keyboard-O', disableActiveInteraction: true, popover: { title: 'Wrong key', description: 'The keyboard will show it in grey as well.' } },
+                { element: '#grid-2', popover: { title: 'Misplaced', description: 'A letter that is in the word but misplaced will appear in orange.' } },
+                { element: grid, popover: { title: 'A few rules to finish', description: 'The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no singular and no plurals.' } },
+                { element: '#keyboard-HINT', disableActiveInteraction: true, popover: { title: "If you're stuck", description: 'Click this button to have a word guessed for you!' } },
+                { element: '#keyboard-DELETE', disableActiveInteraction: true, popover: { title: "Typed the wrong letter?", description: 'Click this button to erase the last letter.' } },
+                { element: settingsElement, disableActiveInteraction: true, popover: { title: "Personalization", description: 'Change language, increase the difficulty, enable vibration/sounds and view this tutorial and rules here.' } },
+                { popover: { title: 'Try to guess the word', description: "Good luck!" } },
+            ]
+        });
+
+        driverObj.drive();
+    });
 
     successAudio.preload = "auto";
     successAudio.load();
@@ -112,6 +221,29 @@ const App: Component = () => {
 
         oscillator.start(now);
         oscillator.stop(now + 0.11);
+    };
+
+    const createTryItStep = (key: Key): DriveStep => ({
+        element: `#keyboard-${key}`,
+        popover: {
+            title: "Try it",
+            description: "Click on this key.",
+            disableButtons: [
+                "next",
+                "previous",
+                "close",
+            ],
+        },
+        onHighlightStarted: () => {
+            setExpectedTutorialKey(key);
+        },
+    });
+
+    const moveToNextTutorialStepIfExpectedKeyIsClicked = (key: Key): void => {
+        if (expectedTutorialKey() !== null && key === expectedTutorialKey()) {
+            setExpectedTutorialKey(null);
+            driverObj?.moveNext();
+        }
     };
 
     // Stores/signals
@@ -227,6 +359,12 @@ const App: Component = () => {
         "numberOfHintsUsed",
         (data: any) => z.record(lang, z.record(difficulty, z.number())).parse(data)
     );
+    const [tutorialCompleted, setTutorialCompleted] = createLocalSignal(
+        false,
+        "tutorialCompleted",
+        (data: any) => z.boolean().parse(data)
+    );
+    const [expectedTutorialKey, setExpectedTutorialKey] = createSignal<Key | null>(null);
 
     // Event listeners
     const saveDifficulty = (difficulty: string): void => {
@@ -249,7 +387,7 @@ const App: Component = () => {
         setLocale(selectedLang);
     };
 
-    const onKeyboardClick = (key: string): void => {
+    const onKeyboardClick = (key: Key): void => {
         const difficulty: Difficulty = currentDifficulty();
         const lang: Lang = currentLang();
         const numberOfLetters: number = getNumberOfLetters();
@@ -263,6 +401,7 @@ const App: Component = () => {
 
             triggerVibration();
             playBubble();
+            moveToNextTutorialStepIfExpectedKeyIsClicked(key);
 
             const indicesOfAllGuessedLetters: Array<number> = lettersToGuessForCurrentDifficulty
                 .map((letter, index) => letter.state === "guessed" ? index : null)
@@ -375,6 +514,7 @@ const App: Component = () => {
         };
 
         setlettersToGuess(lang, difficulty, indexOfNextLetterToGuess, nextLetterToGuess);
+        moveToNextTutorialStepIfExpectedKeyIsClicked(key);
     };
 
     const onClickReplay = (): void => {
@@ -493,6 +633,7 @@ const App: Component = () => {
                     </h1>
                     <button
                         type="button"
+                        ref={settingsElement}
                         onClick={onClickSettings}
                         aria-label="Open settings"
                         class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 md:w-11 md:h-11 hover:cursor-pointer"
@@ -504,7 +645,7 @@ const App: Component = () => {
                 <main class="flex-1 min-h-0 flex flex-col items-center justify-center gap-6 md:gap-0">
                     {/* Grid */}
                     <div class="w-full flex items-center px-2 md:px-6">
-                        <div classList={{
+                        <div ref={grid} classList={{
                             "grid": true,
                             "w-full": true,
                             "grid-rows-5": true,
@@ -519,6 +660,7 @@ const App: Component = () => {
                             <For each={lettersToGuess[currentLang()][currentDifficulty()]}>
                                 {(guessedLetter, tileIndex) => <span
                                     style={{ "--entrance-delay": `${tileIndex() * 25}ms` }}
+                                    id={`grid-${tileIndex()}`}
                                     classList={{
                                         "aspect-square": true,
                                         "border": true,
@@ -571,9 +713,9 @@ const App: Component = () => {
                 {/* Keyboard/Win-loose text */}
                 <Switch>
                     <Match when={!gameFinished()}>
-                        <footer class="shrink-0 pb-[env(safe-area-inset-bottom)] grid grid-rows-3 grid-cols-10 gap-2 mb-4 md:mb-6 px-4 md:gap-2 lg:gap-1 md:px-6">
+                        <footer ref={keyboardElement} class="shrink-0 pb-[env(safe-area-inset-bottom)] grid grid-rows-3 grid-cols-10 gap-2 mb-4 md:mb-6 px-4 md:gap-2 lg:gap-1 md:px-6">
                             <Index each={keyboard[currentLang()]}>
-                                {(key) => <button onclick={() => onKeyboardClick(key())} classList={{
+                                {(key) => <button id={`keyboard-${key()}`} onClick={() => onKeyboardClick(key())} classList={{
                                     "flex": true,
                                     "align-center": true,
                                     "justify-center": true,
@@ -715,7 +857,7 @@ const App: Component = () => {
                     </div>
                 </Show>
             </div>
-        </div>
+        </div >
     );
 };
 
