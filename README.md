@@ -63,8 +63,4 @@ docker compose run --rm magick public/icons/kibly-icon.png -resize 192x192 publi
 docker compose run --rm magick public/icons/kibly-maskable-icon.png -resize 1024x1024 public/icons/kibly-maskable-icon-1024.png
 docker compose run --rm magick public/icons/kibly-maskable-icon.png -resize 512x512 public/icons/kibly-maskable-icon-512.png
 docker compose run --rm magick public/icons/kibly-maskable-icon.png -resize 192x192 public/icons/kibly-maskable-icon-192.png
-
-docker compose run --rm magick public/icons/kibly-maskable-duo-tone-icon.png -resize 1024x1024 public/icons/kibly-maskable-duo-tone-icon-1024.png
-docker compose run --rm magick public/icons/kibly-maskable-duo-tone-icon.png -resize 512x512 public/icons/kibly-maskable-duo-tone-icon-512.png
-docker compose run --rm magick public/icons/kibly-maskable-duo-tone-icon.png -resize 192x192 public/icons/kibly-maskable-duo-tone-icon-192.png
 ```

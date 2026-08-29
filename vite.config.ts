@@ -74,24 +74,6 @@ export default defineConfig({
                         type: "image/png",
                         purpose: "any maskable",
                     },
-                    {
-                        src: `/icons/kibly-maskable-duo-tone-icon-1024.png`,
-                        sizes: "1024x1024",
-                        type: "image/png",
-                        purpose: "monochrome maskable",
-                    },
-                    {
-                        src: `/icons/kibly-maskable-duo-tone-icon-512.png`,
-                        sizes: "512x512",
-                        type: "image/png",
-                        purpose: "monochrome maskable",
-                    },
-                    {
-                        src: `/icons/kibly-maskable-duo-tone-icon-192.png`,
-                        sizes: "192x192",
-                        type: "image/png",
-                        purpose: "monochrome maskable",
-                    },
                 ],
             }
         }),
