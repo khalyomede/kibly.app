@@ -16,6 +16,35 @@ interface Translation {
     "Sound": () => string;
     "Controls": () => string;
     "{count} hints used": (count: number) => string;
+    "Welcome 👋": () => string;
+    "This quick guide will show you how to play.": () => string;
+    "Grid": () => string,
+    "The grid displays the letters you typed.": () => string,
+    "Keyboard": () => string,
+    "The keyboard allows you to guess the word by guessing it letter by letter.": () => string,
+    "Try to find the word": () => string,
+    "Click on the letter {key}.": (key: string) => string,
+    "See if you guessed the correct word.": () => string,
+    "Good first guess 💪": () => string,
+    "Let's see what the colors mean.": () => string,
+    "Correct": () => string,
+    "A letter that is perfectly placed will be colored in green.": () => string,
+    "Wrong": () => string,
+    "A letter that is not in the word to guess will appear in grey.": () => string,
+    "Wrong letter": () => string,
+    "The keyboard will show it in grey as well.": () => string,
+    "Misplaced": () => string,
+    "A letter that is in the word but misplaced will appear in orange.": () => string,
+    "A few rules to finish": () => string,
+    "The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no singular and no plurals.": () => string,
+    "If you're stuck": () => string,
+    "Click this button to have a word guessed for you!": () => string,
+    "Wrong letter typed?": () => string,
+    "Click this button to erase the last letter.": () => string,
+    "Personalization": () => string,
+    "Change language, increase the difficulty, enable vibration/sounds and view rules here.": () => string,
+    "Try to guess the word ✨": () => string,
+    "Good luck!": () => string,
 };
 
 export default Translation;

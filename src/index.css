@@ -89,3 +89,12 @@ body * {
         animation: none;
     }
 }
+
+/* Driver.js tutorial */
+.driver-popover {
+    @apply rounded rounded-xl;
+}
+
+.driver-popover-footer-btn {
+    @apply rounded rounded-lg;
+}
