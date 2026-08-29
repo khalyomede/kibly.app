@@ -12,6 +12,7 @@ import { success as successSound } from "../sounds";
 import { Driver, driver, DriveStep } from "driver.js";
 import "driver.js/dist/driver.css";
 import * as z from "zod";
+import { useNavigate } from '@solidjs/router';
 
 const App: Component = () => {
     // Refs
@@ -24,6 +25,7 @@ const App: Component = () => {
     const successAudio = new Audio(successSound);
     const prefersDarkTheme = createPrefersDarkTheme();
     let driverObj: Driver | null = null;
+    const navigate = useNavigate();
 
     onMount(() => {
         startTutorialIfNotCompleted();
@@ -874,7 +876,19 @@ const App: Component = () => {
                                     />
                                 </div>
                             </div>
-                            {/* Future controls (theme, history, ...) can be added here as new sections */}
+
+                            {/* Help */}
+                            <div class="mt-6">
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-100">{t("Help")}</div>
+                                <button
+                                    type="button"
+                                    onClick={() => navigate("/rules")}
+                                    class="px-4 py-2 rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 text-sm tracking-wide hover:cursor-pointer"
+                                >
+                                    {t("View rules")}
+                                </button>
+                            </div>
+
                         </div>
                     </div>
                 </Show>

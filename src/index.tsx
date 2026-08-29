@@ -3,9 +3,7 @@ import { render } from 'solid-js/web';
 import { init as initSentry, withSentryErrorBoundary } from "@sentry/solid";
 import { solidRouterBrowserTracingIntegration, withSentryRouterRouting } from "@sentry/solid/solidrouter";
 import { Route, Router } from "@solidjs/router";
-import Home from "./pages/Home";
-import Play from "./pages/Play";
-import PlayError from "./pages/PlayError";
+import { Home, Play, PlayError, Rules } from "./pages";
 import 'solid-devtools';
 import './index.css';
 import { ErrorBoundary } from 'solid-js';
@@ -33,6 +31,7 @@ render(
             <SentryRouter>
                 <Route path="/" component={Home} />
                 <Route path="/play" component={Play} />
+                <Route path="/rules" component={Rules} />
                 <Route path="*404" component={Home} />
             </SentryRouter>
         </SentryErrorBoundary>

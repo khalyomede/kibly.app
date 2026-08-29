@@ -45,6 +45,15 @@ interface Translation {
     "Change language, increase the difficulty, enable vibration/sounds and view rules here.": () => string,
     "Try to guess the word ✨": () => string,
     "Good luck!": () => string,
+    "Help": () => string;
+    "View rules": () => string;
+    "How to play": () => string;
+    "Guess the word by clicking on the keyboard at the bottom to write the letters on the grid. Each row is a try and you get 5 chances to find the word.": () => string;
+    "Color meaning": () => string;
+    "A letter that is well placed in the word will be shown in green.": () => string;
+    "A letter that is not in the word will be grayed.": () => string;
+    "A letter that is in the word but misplaced will be shown in orange.": () => string;
+    "Possible words": () => string;
 };
 
 export default Translation;
