@@ -14,7 +14,7 @@ const keyboard: Record<Lang, Array<Key>> = {
     "fr": [
         "A", "Z", "E", "R", "T", "Y", "U", "I", "O", "P",
         "Q", "S", "D", "F", "G", "H", "J", "K", "L", "M",
-        "Z", "X", "C", "V", "B", "N", "HINT", "DELETE", "ENTER",
+        "W", "X", "C", "V", "B", "N", "HINT", "DELETE", "ENTER",
     ],
 };
 
