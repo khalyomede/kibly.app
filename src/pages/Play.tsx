@@ -244,11 +244,11 @@ const App: Component = () => {
         let word: string = "";
 
         if (lang === "en") {
-            wordToGuess = "BEARD";
+            wordToGuess = "BREAD";
             word = "BOARD";
         } else if (lang === "es") {
             wordToGuess = "PUNTO";
-            word = "PIANO";
+            word = "PATIO";
         } else if (lang === "fr") {
             wordToGuess = "LIVRE";
             word = "LOIRE";
