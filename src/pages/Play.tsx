@@ -524,8 +524,6 @@ const App: Component = () => {
         }
 
         if (wordIsCompleted()) {
-            alert("Click enter to validate the word");
-
             return;
         }
 
@@ -753,16 +751,16 @@ const App: Component = () => {
                                     "lg:rounded-xl": true,
                                     "border-2": true,
                                     "hover:cursor-pointer": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
-                                    "border-slate-500": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
+                                    "border-slate-500": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
                                     "dark:border-sky-500": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
                                     "bg-slate-50": !bannedLetters().includes(key()),
                                     "dark:bg-sky-600": (!["DELETE", "ENTER", "HINT"].includes(key())) && !bannedLetters().includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
                                     "dark:bg-sky-800": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()),
                                     "bg-slate-400": bannedLetters().includes(key()),
                                     "dark:bg-sky-900": bannedLetters().includes(key()),
-                                    "text-slate-600": !["DELETE", "ENTER", "HINT"].includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
+                                    "text-slate-600": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
                                     "dark:text-sky-100": !["DELETE", "ENTER", "HINT"].includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
-                                    "text-slate-300": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()),
+                                    "text-slate-300": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()) || (!["DELETE", "ENTER", "HINT"].includes(key()) && wordIsCompleted()),
                                     "dark:text-sky-900": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()),
                                     "text-lg": true,
                                     "md:text-xl": true,
