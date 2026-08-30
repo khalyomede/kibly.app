@@ -20,20 +20,22 @@ const SampleTile: Component<SampleTileProperties> = (properties) => {
                 "h-14": true,
                 "shrink-0": true,
                 "border-2": true,
-                "border-gray-500": true,
+                "border-slate-500": true,
                 "rounded-2xl": true,
                 "flex": true,
                 "items-center": true,
                 "justify-center": true,
                 "text-2xl": true,
-                "text-gray-600": true,
-                "dark:text-gray-300": true,
+                "text-slate-700": properties.variant !== "bad",
+                "dark:text-slate-200": properties.variant !== "bad",
                 "bg-green-200": properties.variant === "good",
                 "dark:bg-green-600": properties.variant === "good",
-                "bg-amber-200": properties.variant === "misplaced",
-                "dark:bg-amber-600": properties.variant === "misplaced",
-                "bg-slate-400": properties.variant === "bad",
+                "bg-orange-300": properties.variant === "misplaced",
+                "dark:bg-orange-600": properties.variant === "misplaced",
+                "bg-slate-500": properties.variant === "bad",
+                "text-white": properties.variant === "bad",
                 "dark:bg-slate-700": properties.variant === "bad",
+                "dark:text-slate-300": properties.variant === "bad",
             }}
         >
             {properties.letter}
@@ -66,7 +68,7 @@ const Rules: Component = () => {
                 {/* How to play */}
                 <section class="mb-8">
                     <h1 class="text-2xl md:text-3xl text-slate-700 dark:text-sky-50 tracking-wide mb-3">{t("How to play")}</h1>
-                    <p class="text-slate-500 dark:text-sky-200">
+                    <p class="text-slate-600 dark:text-sky-200">
                         {t("Guess the word by clicking on the keyboard at the bottom to write the letters on the grid. Each row is a try and you get 5 chances to find the word.")}
                     </p>
                 </section>
@@ -77,17 +79,17 @@ const Rules: Component = () => {
                     <div class="flex flex-col gap-4">
                         <div class="flex items-center gap-4">
                             <SampleTile letter="B" variant="good" />
-                            <p class="text-slate-500 dark:text-sky-200">{t("A letter that is well placed in the word will be shown in green.")}</p>
+                            <p class="text-slate-600 dark:text-sky-200">{t("A letter that is well placed in the word will be shown in green.")}</p>
                         </div>
 
                         <div class="flex items-center gap-4">
                             <SampleTile letter="O" variant="bad" />
-                            <p class="text-slate-500 dark:text-sky-200">{t("A letter that is not in the word will be grayed.")}</p>
+                            <p class="text-slate-600 dark:text-sky-200">{t("A letter that is not in the word will be grayed.")}</p>
                         </div>
 
                         <div class="flex items-center gap-4">
                             <SampleTile letter="A" variant="misplaced" />
-                            <p class="text-slate-500 dark:text-sky-200">{t("A letter that is in the word but misplaced will be shown in orange.")}</p>
+                            <p class="text-slate-600 dark:text-sky-200">{t("A letter that is in the word but misplaced will be shown in orange.")}</p>
                         </div>
                     </div>
                 </section>
@@ -95,7 +97,7 @@ const Rules: Component = () => {
                 {/* Possible words */}
                 <section>
                     <h2 class="text-2xl md:text-3xl text-slate-700 dark:text-sky-50 tracking-wide mb-3">{t("Possible words")}</h2>
-                    <p class="text-slate-500 dark:text-sky-200 text-sm">
+                    <p class="text-slate-600 dark:text-sky-200 text-sm">
                         {t("The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no singular and no plurals.")}
                     </p>
                 </section>

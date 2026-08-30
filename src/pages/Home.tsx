@@ -63,7 +63,7 @@ const Home: Component = () => {
 
     return <div class="min-h-screen bg-orange-50 dark:bg-sky-950 flex items-center justify-center flex-col gap-4 md:gap-8">
         <Logo class="w-70 lg:w-80 h-auto" />
-        <div class="text-slate-400 md:text-3xl lg:text-2xl">{t("A cosy word guessing game")}</div>
+        <div class="text-slate-600 dark:text-sky-200 md:text-3xl lg:text-2xl">{t("A cosy word guessing game")}</div>
         <button onclick={() => onPlayClick()} class="bg-green-600 dark:bg-sky-800 text-green-50 dark:text-sky-200 border border-2 border-green-800 dark:border-sky-700 text-lg md:text-3xl lg:text-xl rounded-xl lg:rounded-3xl px-10 py-1 md:px-12 md:py-3 lg:py-2 hover:cursor-pointer">{t("Play now")}</button>
     </div>
 };
