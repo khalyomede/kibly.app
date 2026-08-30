@@ -3,6 +3,15 @@
 
 <head>
     <!-- Critical background to prevent flash -->
+    <script>
+        (function () {
+            try {
+                var isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+                if (isDark) document.documentElement.classList.add("dark");
+            } catch (e) { }
+        })();
+    </script>
     <style>
         * {
             font-family: "Fredoka", sans-serif;
