@@ -258,13 +258,16 @@ const App: Component = () => {
         setCurrentWordToGuess(lang, "easy", wordToGuess);
 
         driverObj = driver({
-            showProgress: true,
+            showProgress: false,
             allowClose: false,
             onDoneClick: () => {
                 setTutorialCompleted(true);
                 driverObj?.moveNext();
             },
             steps: createTutorialSteps(lang, word),
+            nextBtnText: t("Next"),
+            prevBtnText: t("Previous"),
+            doneBtnText: t("Done"),
         });
 
         driverObj.drive();

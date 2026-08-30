@@ -54,6 +54,9 @@ interface Translation {
     "A letter that is not in the word will be grayed.": () => string;
     "A letter that is in the word but misplaced will be shown in orange.": () => string;
     "Possible words": () => string;
+    "Previous": () => string;
+    "Next": () => string;
+    "Done": () => string;
 };
 
 export default Translation;

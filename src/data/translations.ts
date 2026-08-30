@@ -57,6 +57,9 @@ const translations: Record<Lang, Translation> = {
         "A letter that is not in the word will be grayed.": (): string => "A letter that is not in the word will be grayed.",
         "A letter that is in the word but misplaced will be shown in orange.": (): string => "A letter that is in the word but misplaced will be shown in orange.",
         "Possible words": (): string => "Possible words",
+        "Previous": (): string => "Previous",
+        "Next": (): string => "Next",
+        "Done": (): string => "Next",
     },
     "es": {
         "Play now": (): string => "Jugar ahora",
@@ -114,6 +117,9 @@ const translations: Record<Lang, Translation> = {
         "A letter that is not in the word will be grayed.": (): string => "A letter that is not in the word will be grayed.",
         "A letter that is in the word but misplaced will be shown in orange.": (): string => "A letter that is in the word but misplaced will be shown in orange.",
         "Possible words": (): string => "Possible words",
+        "Previous": (): string => "Anterior",
+        "Next": (): string => "Siguiente",
+        "Done": (): string => "Listo",
     },
     "fr": {
         "Play now": (): string => "Jouer maintenant",
@@ -171,6 +177,9 @@ const translations: Record<Lang, Translation> = {
         "A letter that is not in the word will be grayed.": (): string => "Une lettre qui n'est pas dans le mot sera grisée.",
         "A letter that is in the word but misplaced will be shown in orange.": (): string => "Une lettre présente dans le mot mais mal placée sera affichée en orange.",
         "Possible words": (): string => "Mots possibles",
+        "Previous": (): string => "Précédent",
+        "Next": (): string => "Suivant",
+        "Done": (): string => "Terminé",
     },
 };
 
