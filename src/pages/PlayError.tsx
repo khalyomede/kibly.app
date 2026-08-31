@@ -29,7 +29,7 @@ const PlayError: Component = () => {
                     Oops!
                 </h1>
 
-                <p class="mt-3 text-xl md:text-2xl text-slate-600 dark:text-sky-800 tracking-wide">
+                <p class="mt-3 text-xl md:text-2xl text-slate-600 dark:text-sky-300 tracking-wide">
                     Failed to load your game
                 </p>
 

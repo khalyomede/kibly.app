@@ -45,6 +45,12 @@ body * {
     background-size: cover;
 }
 
+@media (prefers-color-scheme: dark) {
+    .play-page {
+        background-color: #052f4a;
+    }
+}
+
 /* Letters appearing animation */
 @keyframes letter-tile-appear {
     from {
@@ -97,4 +103,43 @@ body * {
 
 .driver-popover-footer-btn {
     @apply rounded rounded-lg;
+}
+
+@media (prefers-color-scheme: dark) {
+    .driver-popover {
+        background-color: #024a70;
+        color: #dff2fe;
+    }
+
+    .driver-popover-title,
+    .driver-popover-description {
+        color: #dff2fe;
+    }
+
+    .driver-popover-footer-btn {
+        background-color: #00598a;
+        color: #dff2fe;
+        border-color: #0069a8;
+        text-shadow: none;
+    }
+
+    .driver-popover-close-btn {
+        color: #b8e6fe;
+    }
+
+    .driver-popover-arrow-side-top.driver-popover-arrow {
+        border-top-color: #024a70;
+    }
+
+    .driver-popover-arrow-side-bottom.driver-popover-arrow {
+        border-bottom-color: #024a70;
+    }
+
+    .driver-popover-arrow-side-left.driver-popover-arrow {
+        border-left-color: #024a70;
+    }
+
+    .driver-popover-arrow-side-right.driver-popover-arrow {
+        border-right-color: #024a70;
+    }
 }

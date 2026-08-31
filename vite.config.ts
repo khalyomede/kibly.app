@@ -51,7 +51,7 @@ export default defineConfig({
                 orientation: "portrait-primary",
                 start_url: "/",
                 id: "kibly.app",
-                background_color: "#14532D",
+                background_color: "#FFF7ED",
                 categories: [
                     "games",
                 ],

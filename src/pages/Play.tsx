@@ -698,18 +698,19 @@ const App: Component = () => {
                                         "text-3xl": true,
                                         "md:text-4xl": true,
                                         "lg:text-2xl": true,
-                                        "text-gray-600": true,
-                                        "dark:text-gray-300": true,
-                                        "border-gray-500": true,
+                                        "text-slate-600": true,
+                                        "dark:text-sky-100": true,
+                                        "border-slate-500": true,
+                                        "dark:border-sky-600": true,
                                         "border-2": true,
                                         "letter-tile-appear": true,
                                         "letter-tile-flip": flippingTileIndices().has(tileIndex()),
                                         "bg-slate-50": ["to-guess", "guessed"].includes(guessedLetter.state),
-                                        "dark:bg-slate-500": ["to-guess", "guessed"].includes(guessedLetter.state),
+                                        "dark:bg-sky-800": ["to-guess", "guessed"].includes(guessedLetter.state),
                                         "bg-amber-200": guessedLetter.state === "misplaced",
                                         "dark:bg-amber-600": guessedLetter.state === "misplaced",
                                         "bg-slate-400": guessedLetter.state === "bad",
-                                        "dark:bg-slate-700": guessedLetter.state === "bad",
+                                        "dark:bg-sky-900": guessedLetter.state === "bad",
                                         "bg-green-200": guessedLetter.state === "good",
                                         "dark:bg-green-600": guessedLetter.state === "good",
                                     }}
@@ -722,13 +723,13 @@ const App: Component = () => {
                 <div class="flex-shrink flex justify-center my-4 md:my-8 lg:my-6">
                     <Switch>
                         <Match when={gameFinished()}>
-                            <button onClick={onClickReplay} class="px-6 py-2 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 dark:border-sky-700 text-slate-700 dark:text-sky-200 bg-slate-100 dark:bg-sky-800 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
+                            <button onClick={onClickReplay} class="px-6 py-2 uppercase rounded-xl md:rounded-2xl lg:rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 tracking-wider flex items-center gap-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
                                 <span>{t("Replay")}</span>
                                 <RefreshCcw width="16" height="16" />
                             </button>
                         </Match>
                         <Match when={!gameFinished()}>
-                            <button onClick={onClickChange} class="px-6 py-2 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 dark:border-sky-700 text-slate-700 dark:text-sky-200 bg-slate-100 dark:bg-sky-800 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
+                            <button onClick={onClickChange} class="px-6 py-2 uppercase rounded-xl md:rounded-2xl lg:rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 tracking-wider flex items-center gap-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
                                 <span>{t("Change")}</span>
                                 <RefreshCw width="16" height="16" />
                             </button>
@@ -797,15 +798,15 @@ const App: Component = () => {
                 <Show when={settingsOpen()}>
                     <div class="fixed inset-0 z-50 flex flex-col justify-end md:items-center md:justify-center" role="dialog" aria-modal="true" aria-label="Settings">
                         <div class="sheet-backdrop absolute inset-0 bg-slate-900/40" onClick={() => setSettingsOpen(false)}></div>
-                        <div class="sheet-panel relative bg-orange-50 dark:bg-sky-800 rounded-t-3xl border-t-2 border-slate-200 dark:border-sky-950 px-5 pt-3 pb-8 shadow-2xl md:w-full md:max-w-md md:rounded-3xl md:border md:border-t-2 md:px-8 md:py-8">
-                            <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300 dark:bg-sky-950 md:hidden"></div>
+                        <div class="sheet-panel relative bg-orange-50 dark:bg-sky-900 rounded-t-3xl border-t-2 border-slate-200 dark:border-sky-700 px-5 pt-3 pb-8 shadow-2xl md:w-full md:max-w-md md:rounded-3xl md:border md:border-t-2 md:px-8 md:py-8">
+                            <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300 dark:bg-sky-700 md:hidden"></div>
                             <div class="flex items-center mb-6">
                                 <h2 class="grow text-lg text-slate-700 dark:text-sky-50 tracking-wide md:text-xl">{t("Settings")}</h2>
                                 <button
                                     type="button"
                                     onClick={onClickCloseSettings}
                                     aria-label="Close settings"
-                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 dark:text-sky-950 border-2 border-slate-200 dark:border-sky-950"
+                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 dark:text-sky-100 border-2 border-slate-200 dark:border-sky-700"
                                 >
                                     <X width="18" height="18" />
                                 </button>
@@ -813,7 +814,7 @@ const App: Component = () => {
 
                             {/* Language */}
                             <div class="mb-6">
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-100">Language</div>
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">Language</div>
                                 <div class="grid grid-cols-3 gap-2">
                                     <For each={langs}>
                                         {(lang) => <button
@@ -826,8 +827,8 @@ const App: Component = () => {
                                                 "border-2": true,
                                                 "text-sm": true,
                                                 "tracking-wide": true,
-                                                "border-green-800 bg-green-600 text-green-50": currentLang() === lang,
-                                                "border-slate-300 bg-white/70 text-slate-600": currentLang() !== lang,
+                                                "border-green-800 bg-green-600 text-green-50 dark:border-green-800 dark:bg-green-700 dark:text-green-50": currentLang() === lang,
+                                                "border-slate-300 bg-white/70 text-slate-600 dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200": currentLang() !== lang,
                                             }}
                                         >{langLabels[lang]}</button>}
                                     </For>
@@ -836,7 +837,7 @@ const App: Component = () => {
 
                             {/* Difficulty */}
                             <div class="mb-6">
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-100">Difficulty</div>
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">Difficulty</div>
                                 <div class="grid grid-cols-3 gap-2">
                                     <For each={difficulties}>
                                         {(difficulty) => <button
@@ -849,8 +850,8 @@ const App: Component = () => {
                                                 "border-2": true,
                                                 "text-sm": true,
                                                 "tracking-wide": true,
-                                                "border-green-800 bg-green-600 text-green-50": currentDifficulty() === difficulty,
-                                                "border-slate-300 bg-white/70 text-slate-600": currentDifficulty() !== difficulty,
+                                                "border-green-800 bg-green-600 text-green-50 dark:border-green-800 dark:bg-green-700 dark:text-green-50": currentDifficulty() === difficulty,
+                                                "border-slate-300 bg-white/70 text-slate-600 dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200": currentDifficulty() !== difficulty,
                                             }}
                                         >
                                             <Switch>
@@ -865,7 +866,7 @@ const App: Component = () => {
 
                             {/* Vibration / Sound */}
                             <div>
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-100">{t("Controls")}</div>
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">{t("Controls")}</div>
                                 <div class="flex flex-col gap-4">
                                     <ToggleSwitch
                                         label={t("Vibration")}
@@ -882,7 +883,7 @@ const App: Component = () => {
 
                             {/* Help */}
                             <div class="mt-6">
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-100">{t("Help")}</div>
+                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">{t("Help")}</div>
                                 <button
                                     type="button"
                                     onClick={() => navigate("/rules")}

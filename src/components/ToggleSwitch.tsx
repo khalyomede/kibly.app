@@ -28,6 +28,10 @@ const ToggleSwitch: Component<ToggleSwitchProperties> = (properties) => {
                     "bg-green-600": properties.isChecked,
                     "border-slate-300": !properties.isChecked,
                     "bg-white/70": !properties.isChecked,
+                    "dark:border-green-800": properties.isChecked,
+                    "dark:bg-green-700": properties.isChecked,
+                    "dark:border-sky-700": !properties.isChecked,
+                    "dark:bg-sky-800": !properties.isChecked,
                 }}
             >
                 <span
@@ -40,6 +44,7 @@ const ToggleSwitch: Component<ToggleSwitchProperties> = (properties) => {
                         "rounded-full": true,
                         "bg-white": properties.isChecked,
                         "bg-slate-200": !properties.isChecked,
+                        "dark:bg-sky-100": !properties.isChecked,
                         "shadow-sm": true,
                         "transition-transform": true,
                         "translate-x-5": properties.isChecked,
