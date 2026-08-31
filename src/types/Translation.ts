@@ -30,7 +30,7 @@ interface Translation {
     "Correct": () => string,
     "A letter that is perfectly placed will be colored in green.": () => string,
     "Wrong": () => string,
-    "A letter that is not in the word to guess will appear in grey.": () => string,
+    "A letter that is not in the word to guess will appear dark.": () => string,
     "Wrong letter": () => string,
     "The keyboard will show it in grey as well.": () => string,
     "Misplaced": () => string,
