@@ -648,7 +648,7 @@ const App: Component = () => {
         <div class="play-page min-h-dvh bg-orange-50 flex justify-center" style={{
             "background-image": prefersDarkTheme() ? `url(${kiblyBackgroundDark})` : `url(${kiblyBackground})`,
         }}>
-            <div class="h-dvh flex flex-col w-full md:max-w-xl md:mx-auto lg:max-w-sm">
+            <div class="h-dvh flex flex-col gap-2 w-full md:max-w-xl mx-2 md:mx-auto lg:max-w-sm">
                 {/* Header */}
                 <header class="shrink-0 px-3 py-6 flex items-center gap-8 md:py-8">
                     {/* Spacer to keep the logo optically centered against the cog */}
@@ -667,7 +667,7 @@ const App: Component = () => {
                     </button>
                 </header>
                 {/* Middle / game area */}
-                <main class="flex-1 min-h-0 flex flex-col items-center justify-center gap-6 md:gap-0">
+                <main class="flex-shrink min-h-0 flex flex-col items-center justify-center gap-6 md:gap-0">
                     {/* Grid */}
                     <div class="w-full flex items-center px-2 md:px-6">
                         <div ref={grid} classList={{
@@ -717,79 +717,81 @@ const App: Component = () => {
                             </For>
                         </div>
                     </div>
-                    {/* Replay/Abort */}
-                    <div class="flex justify-center mb-4 md:my-8 lg:my-6">
-                        <Switch>
-                            <Match when={gameFinished()}>
-                                <button onClick={onClickReplay} class="px-6 py-2 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 dark:border-sky-700 text-slate-700 dark:text-sky-200 bg-slate-100 dark:bg-sky-800 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
-                                    <span>{t("Replay")}</span>
-                                    <RefreshCcw width="16" height="16" />
-                                </button>
-                            </Match>
-                            <Match when={!gameFinished()}>
-                                <button onClick={onClickChange} class="px-6 py-2 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 dark:border-sky-700 text-slate-700 dark:text-sky-200 bg-slate-100 dark:bg-sky-800 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
-                                    <span>{t("Change")}</span>
-                                    <RefreshCw width="16" height="16" />
-                                </button>
-                            </Match>
-                        </Switch>
-                    </div>
                 </main>
+                {/* Replay/Abort */}
+                <div class="flex-shrink flex justify-center my-4 md:my-8 lg:my-6">
+                    <Switch>
+                        <Match when={gameFinished()}>
+                            <button onClick={onClickReplay} class="px-6 py-2 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 dark:border-sky-700 text-slate-700 dark:text-sky-200 bg-slate-100 dark:bg-sky-800 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
+                                <span>{t("Replay")}</span>
+                                <RefreshCcw width="16" height="16" />
+                            </button>
+                        </Match>
+                        <Match when={!gameFinished()}>
+                            <button onClick={onClickChange} class="px-6 py-2 uppercase border rounded-xl md:rounded-2xl lg:rounded-xl border-slate-500 dark:border-sky-700 text-slate-700 dark:text-sky-200 bg-slate-100 dark:bg-sky-800 tracking-wider flex items-center gap-2 border border-2 md:px-8 md:py-2 md:text-lg lg:text-sm hover:cursor-pointer">
+                                <span>{t("Change")}</span>
+                                <RefreshCw width="16" height="16" />
+                            </button>
+                        </Match>
+                    </Switch>
+                </div>
                 {/* Keyboard/Win-loose text */}
-                <Switch>
-                    <Match when={!gameFinished()}>
-                        <footer ref={keyboardElement} class="shrink-0 pb-[env(safe-area-inset-bottom)] grid grid-rows-3 grid-cols-10 gap-2 mb-4 md:mb-6 px-4 md:gap-2 lg:gap-1 md:px-6">
-                            <Index each={keyboard[currentLang()]}>
-                                {(key) => <button id={`keyboard-${key()}`} onClick={() => onKeyboardClick(key())} classList={{
-                                    "flex": true,
-                                    "align-center": true,
-                                    "justify-center": true,
-                                    "items-center": true,
-                                    "border": true,
-                                    "rounded-lg": true,
-                                    "md:rounded-2xl": true,
-                                    "lg:rounded-xl": true,
-                                    "border-2": true,
-                                    "hover:cursor-pointer": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
-                                    "border-slate-500": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
-                                    "dark:border-sky-500": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
-                                    "bg-slate-50": !bannedLetters().includes(key()),
-                                    "dark:bg-sky-600": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) && !bannedLetters().includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
-                                    "dark:bg-sky-800": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()) || (!["DELETE", "ENTER", "HINT"].includes(key()) && wordIsCompleted()),
-                                    "bg-slate-400": bannedLetters().includes(key()),
-                                    "dark:bg-sky-900": bannedLetters().includes(key()),
-                                    "text-slate-600": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
-                                    "dark:text-sky-100": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
-                                    "text-slate-300": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()) || (!["DELETE", "ENTER", "HINT"].includes(key()) && wordIsCompleted()),
-                                    "dark:text-sky-700": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()) || (!["DELETE", "ENTER", "HINT"].includes(key()) && wordIsCompleted()),
-                                    "text-lg": true,
-                                    "md:text-xl": true,
-                                    "aspect-square": key() !== "HINT",
-                                    "col-span-2": key() === "HINT"
-                                }} aria-label={key() === "DELETE" ? t("Delete") : (key() === "ENTER" ? t("Validate") : undefined)}>
-                                    <Switch fallback={key()}>
-                                        <Match when={key() === "HINT"}>{t("hint")}</Match>
-                                        <Match when={key() === "DELETE"}><Delete width="18" height="18" /></Match>
-                                        <Match when={key() === "ENTER"}><CheckCheck width="18" height="18" /></Match>
-                                    </Switch>
-                                </button>}
-                            </Index>
-                        </footer>
-                    </Match>
-                    <Match when={gameLost()}>
-                        <footer class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6 dark:text-sky-200">
-                            <span class="tracking-wide">{t("Word was: {word}", wordToGuess())}</span>
-                        </footer>
-                    </Match>
-                    <Match when={gameWon()}>
-                        <footer class="flex flex-col items-center justify-center gap-2 text-xl md:text-2xl py-6 text-orange-900 dark:text-sky-200">
-                            <div class="tracking-wide">{t("You found it!")}</div>
-                            <Show when={numberOfHintsUsed[currentLang()][currentDifficulty()] > 0}>
-                                <div class="text-sm text-orange-700 dark:text-sky-500">{t("{count} hints used", numberOfHintsUsed[currentLang()][currentDifficulty()])}</div>
-                            </Show>
-                        </footer>
-                    </Match>
-                </Switch>
+                <div class="my-auto">
+                    <Switch>
+                        <Match when={!gameFinished()}>
+                            <footer ref={keyboardElement} class="shrink-0 pb-[env(safe-area-inset-bottom)] grid grid-rows-3 grid-cols-10 gap-1 mb-4 md:mb-6 px-4 md:gap-2 lg:gap-1 md:px-6">
+                                <Index each={keyboard[currentLang()]}>
+                                    {(key) => <button id={`keyboard-${key()}`} onClick={() => onKeyboardClick(key())} classList={{
+                                        "flex": true,
+                                        "align-center": true,
+                                        "justify-center": true,
+                                        "items-center": true,
+                                        "border": true,
+                                        "rounded-lg": true,
+                                        "md:rounded-2xl": true,
+                                        "lg:rounded-xl": true,
+                                        "border-2": true,
+                                        "hover:cursor-pointer": (!["DELETE", "ENTER", "HINT"].includes(key())) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
+                                        "border-slate-500": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
+                                        "dark:border-sky-500": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) || (key() === "DELETE" && canDelete()) || (key() === "HINT" && canHint()) || (key() === "ENTER" && canValidate()),
+                                        "bg-slate-50": !bannedLetters().includes(key()),
+                                        "dark:bg-sky-600": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) && !bannedLetters().includes(key()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
+                                        "dark:bg-sky-800": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()) || (!["DELETE", "ENTER", "HINT"].includes(key()) && wordIsCompleted()),
+                                        "bg-slate-400": bannedLetters().includes(key()),
+                                        "dark:bg-sky-900": bannedLetters().includes(key()),
+                                        "text-slate-600": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
+                                        "dark:text-sky-100": (!["DELETE", "ENTER", "HINT"].includes(key()) && !wordIsCompleted()) || (key() === "DELETE" && canDelete()) || (key() === "ENTER" && canValidate()) || (key() === "HINT" && canHint()),
+                                        "text-slate-300": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()) || (!["DELETE", "ENTER", "HINT"].includes(key()) && wordIsCompleted()),
+                                        "dark:text-sky-700": (key() === "DELETE" && !canDelete()) || (key() === "ENTER" && !canValidate()) || (key() === "HINT" && !canHint()) || (!["DELETE", "ENTER", "HINT"].includes(key()) && wordIsCompleted()),
+                                        "text-lg": true,
+                                        "md:text-xl": true,
+                                        "aspect-square": key() !== "HINT",
+                                        "col-span-2": key() === "HINT"
+                                    }} aria-label={key() === "DELETE" ? t("Delete") : (key() === "ENTER" ? t("Validate") : undefined)}>
+                                        <Switch fallback={key()}>
+                                            <Match when={key() === "HINT"}>{t("hint")}</Match>
+                                            <Match when={key() === "DELETE"}><Delete width="18" height="18" /></Match>
+                                            <Match when={key() === "ENTER"}><CheckCheck width="18" height="18" /></Match>
+                                        </Switch>
+                                    </button>}
+                                </Index>
+                            </footer>
+                        </Match>
+                        <Match when={gameLost()}>
+                            <footer class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6 dark:text-sky-200">
+                                <span class="tracking-wide">{t("Word was: {word}", wordToGuess())}</span>
+                            </footer>
+                        </Match>
+                        <Match when={gameWon()}>
+                            <footer class="flex flex-col items-center justify-center gap-2 text-xl md:text-2xl py-6 text-orange-900 dark:text-sky-200">
+                                <div class="tracking-wide">{t("You found it!")}</div>
+                                <Show when={numberOfHintsUsed[currentLang()][currentDifficulty()] > 0}>
+                                    <div class="text-sm text-orange-700 dark:text-sky-500">{t("{count} hints used", numberOfHintsUsed[currentLang()][currentDifficulty()])}</div>
+                                </Show>
+                            </footer>
+                        </Match>
+                    </Switch>
+                </div>
 
                 {/* Settings sheet */}
                 <Show when={settingsOpen()}>
