@@ -38,7 +38,7 @@ interface Translation {
     "A few rules to finish": () => string,
     "The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no singular and no plurals.": () => string,
     "If you're stuck": () => string,
-    "Click this button to have a word guessed for you!": () => string,
+    "Click this button to have a letter guessed for you!": () => string,
     "Wrong letter typed?": () => string,
     "Click this button to erase the last letter.": () => string,
     "Personalization": () => string,

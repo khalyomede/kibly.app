@@ -225,7 +225,7 @@ const App: Component = () => {
             { element: grid, popover: { title: t("A few rules to finish"), description: t("The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no singular and no plurals.") } },
             {
                 element: "#keyboard-HINT", disableActiveInteraction: true, popover: {
-                    title: t("If you're stuck"), description: t("Click this button to have a word guessed for you!"),
+                    title: t("If you're stuck"), description: t("Click this button to have a letter guessed for you!"),
                 }
             },
             { element: "#keyboard-DELETE", disableActiveInteraction: true, popover: { title: t("Wrong letter typed?"), description: t("Click this button to erase the last letter.") } },
