@@ -1,11 +1,12 @@
 import { useNavigate } from "@solidjs/router";
 import { Component } from "solid-js";
 import { ArrowLeft } from "lucide-solid";
-import { createLocalSignal } from "../helpers";
+import { createLocalSignal, vibrate } from "../helpers";
 import { lang } from "../definitions";
 import { Lang, Translation } from "../types";
 import { translations } from "../data";
 import { createI18n } from "../packages/i18n";
+import * as z from "zod";
 
 interface SampleTileProperties {
     letter: string;
@@ -43,13 +44,33 @@ const SampleTile: Component<SampleTileProperties> = (properties) => {
 };
 
 const Rules: Component = () => {
+    // Others
     const navigate = useNavigate();
+
+    // Helpers
+    const triggerVibration = (durationInMillisecondsOrPattern: number | Array<number> = 15): void => {
+        if (!vibrationEnabled())
+            return;
+
+        vibrate(durationInMillisecondsOrPattern);
+    };
+
+    // Stores/signals
     const [currentLang] = createLocalSignal("en", "lang", (data: any) => {
         let savedLang = "en";
         try { savedLang = lang.parse(data); } catch { }
         return savedLang as Lang;
     });
     const [t, setLocale] = createI18n<Lang, Translation>(translations, currentLang());
+    const [vibrationEnabled,] = createLocalSignal(false, "vibrationEnabled", (data: any): boolean => z.boolean().parse(data));
+
+    // Event listeners
+    const navigateBackToPlayPage = (): void => {
+        triggerVibration();
+        navigate("/play");
+    };
+
+    // Main
     setLocale(currentLang());
 
     return (
@@ -57,7 +78,7 @@ const Rules: Component = () => {
             <div class="w-full md:max-w-xl">
                 <button
                     type="button"
-                    onClick={() => navigate("/play")}
+                    onClick={navigateBackToPlayPage}
                     aria-label="Back"
                     class="w-9 h-9 flex items-center justify-center rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 mb-6 hover:cursor-pointer"
                 >

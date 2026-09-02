@@ -79,11 +79,11 @@ const App: Component = () => {
         });
     };
 
-    const triggerVibration = (): void => {
+    const triggerVibration = (durationInMillisecondsOrPattern: number | Array<number> = 15): void => {
         if (!vibrationEnabled())
             return;
 
-        vibrate();
+        vibrate(durationInMillisecondsOrPattern);
     };
 
     let audioContext: AudioContext | undefined;
@@ -444,7 +444,7 @@ const App: Component = () => {
                     const existingGuessedWords = guessedWords[lang][difficulty];
 
                     setGuessedWords(lang, difficulty, [...existingGuessedWords, wordToGuess()]);
-                    vibrate([40, 60, 40, 60, 80]);
+                    triggerVibration([40, 60, 40, 60, 80]);
 
                     return;
                 }
@@ -584,11 +584,18 @@ const App: Component = () => {
     };
 
     const onClickToggleVibration = (): void => {
+        triggerVibration();
         setVibrationEnabled((previousValue) => !previousValue);
     };
 
     const onClickToggleSound = (): void => {
+        triggerVibration();
         setSoundEnabled((previousValue) => !previousValue);
+    };
+
+    const navigateToRulesPage = (): void => {
+        triggerVibration();
+        navigate("/rules");
     };
 
     // Derived
@@ -886,7 +893,7 @@ const App: Component = () => {
                                 <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">{t("Help")}</div>
                                 <button
                                     type="button"
-                                    onClick={() => navigate("/rules")}
+                                    onClick={navigateToRulesPage}
                                     class="px-4 py-2 rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 text-sm tracking-wide hover:cursor-pointer"
                                 >
                                     {t("View rules")}
