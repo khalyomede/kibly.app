@@ -123,6 +123,14 @@ body * {
         text-shadow: none;
     }
 
+    .driver-popover-footer-btn:hover,
+    .driver-popover-footer-btn:focus,
+    .driver-popover-footer-btn:active {
+        background-color: #0069a8;
+        color: #dff2fe;
+        border-color: #007ab8;
+    }
+
     .driver-popover-close-btn {
         color: #b8e6fe;
     }
