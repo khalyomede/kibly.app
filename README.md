@@ -53,6 +53,15 @@ docker compose run --rm magick src/images/kibly-logo.png -resize 1024x src/image
 docker compose run --rm magick src/images/kibly-logo.png -resize 1440x src/images/kibly-logo-desktop.png
 ```
 
+### Background
+
+```bash
+docker compose run --rm magick src/images/kibly-background-mobile.png -define webp:lossless=true src/images/kibly-background-mobile.webp
+docker compose run --rm magick src/images/kibly-background-mobile-dark.png -define webp:lossless=true src/images/kibly-background-mobile-dark.webp
+docker compose run --rm magick src/images/kibly-background-desktop.png -define webp:lossless=true src/images/kibly-background-desktop.webp
+docker compose run --rm magick src/images/kibly-background-desktop-dark.png -define webp:lossless=true src/images/kibly-background-desktop-dark.webp
+```
+
 ### Icon (favicon, app icon)
 
 ```bash

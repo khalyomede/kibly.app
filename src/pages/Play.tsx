@@ -2,7 +2,7 @@ import { For, Index, Match, Show, Switch, createSignal, onMount, type Component 
 import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, createPrefersDarkTheme, prefersReducedMotion, vibrate } from "../helpers";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import { Logo, ToggleSwitch } from '../components';
-import { kiblyBackground, kiblyBackgroundDark } from "../images";
+import { kiblyBackgroundMobilePng, kiblyBackgroundMobileDarkPng, kiblyBackgroundDesktopPng, kiblyBackgroundDesktopDarkPng, kiblyBackgroundMobileWebp, kiblyBackgroundMobileDarkWebp, kiblyBackgroundDesktopWebp, kiblyBackgroundDesktopDarkWebp } from "../images";
 import { Difficulty, Key, Lang, LetterState, Translation } from "../types";
 import { Letter } from "../interfaces";
 import { difficulties, keyboard, langs, translations, words } from "../data";
@@ -652,10 +652,58 @@ const App: Component = () => {
         .filter((letter: Letter): boolean => letter.state === "guessed").length < wordToGuess().length;
 
     return (
-        <div class="play-page min-h-dvh bg-orange-50 flex justify-center" style={{
-            "background-image": prefersDarkTheme() ? `url(${kiblyBackgroundDark})` : `url(${kiblyBackground})`,
-        }}>
-            <div class="h-dvh flex flex-col gap-2 w-full md:max-w-xl mx-2 md:mx-auto lg:max-w-sm">
+        <div class="play-page relative min-h-dvh bg-orange-50 flex justify-center overflow-hidden">
+            <picture class="fixed inset-0 -z-0">
+                {/* Desktop dark */}
+                <source
+                    media="(min-width: 768px) and (prefers-color-scheme: dark)"
+                    srcset={kiblyBackgroundDesktopDarkWebp}
+                    type="image/webp"
+                />
+                <source
+                    media="(min-width: 768px) and (prefers-color-scheme: dark)"
+                    srcset={kiblyBackgroundDesktopDarkPng}
+                />
+
+                {/* Desktop light */}
+                <source
+                    media="(min-width: 768px)"
+                    srcset={kiblyBackgroundDesktopWebp}
+                    type="image/webp"
+                />
+                <source
+                    media="(min-width: 768px)"
+                    srcset={kiblyBackgroundDesktopPng}
+                />
+
+                {/* Mobile dark */}
+                <source
+                    media="(prefers-color-scheme: dark)"
+                    srcset={kiblyBackgroundMobileDarkWebp}
+                    type="image/webp"
+                />
+                <source
+                    media="(prefers-color-scheme: dark)"
+                    srcset={kiblyBackgroundMobileDarkPng}
+                />
+
+                {/* Mobile light */}
+                <source
+                    srcset={kiblyBackgroundMobileWebp}
+                    type="image/webp"
+                />
+                <source srcset={kiblyBackgroundMobilePng} />
+
+                <img
+                    src={kiblyBackgroundMobilePng}
+                    alt=""
+                    class="h-full w-full object-cover"
+                    aria-hidden="true"
+                />
+            </picture>
+
+            {/* Your existing game */}
+            <div class="relative z-10 h-dvh flex flex-col gap-2 w-full md:max-w-xl mx-2 md:mx-auto lg:max-w-sm">
                 {/* Header */}
                 <header class="shrink-0 px-3 py-6 flex items-center gap-8 md:py-8">
                     {/* Spacer to keep the logo optically centered against the cog */}
@@ -813,7 +861,7 @@ const App: Component = () => {
                                     type="button"
                                     onClick={onClickCloseSettings}
                                     aria-label="Close settings"
-                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 dark:text-sky-100 border-2 border-slate-200 dark:border-sky-700"
+                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 dark:text-sky-100 border-2 border-slate-200 dark:border-sky-700 hover:cursor-pointer"
                                 >
                                     <X width="18" height="18" />
                                 </button>
@@ -834,6 +882,7 @@ const App: Component = () => {
                                                 "border-2": true,
                                                 "text-sm": true,
                                                 "tracking-wide": true,
+                                                "hover:cursor-pointer": true,
                                                 "border-green-800 bg-green-600 text-green-50 dark:border-green-800 dark:bg-green-700 dark:text-green-50": currentLang() === lang,
                                                 "border-slate-300 bg-white/70 text-slate-600 dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200": currentLang() !== lang,
                                             }}
@@ -857,6 +906,7 @@ const App: Component = () => {
                                                 "border-2": true,
                                                 "text-sm": true,
                                                 "tracking-wide": true,
+                                                "hover:cursor-pointer": true,
                                                 "border-green-800 bg-green-600 text-green-50 dark:border-green-800 dark:bg-green-700 dark:text-green-50": currentDifficulty() === difficulty,
                                                 "border-slate-300 bg-white/70 text-slate-600 dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200": currentDifficulty() !== difficulty,
                                             }}
