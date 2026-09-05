@@ -57,6 +57,7 @@ interface Translation {
     "Previous": () => string;
     "Next": () => string;
     "Done": () => string;
+    "Music": () => string;
 };
 
 export default Translation;

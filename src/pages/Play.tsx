@@ -1,4 +1,4 @@
-import { For, Index, Match, Show, Switch, createSignal, onMount, type Component } from 'solid-js';
+import { For, Index, Match, Show, Switch, createSignal, onCleanup, onMount, type Component } from 'solid-js';
 import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, createPrefersDarkTheme, prefersReducedMotion, vibrate } from "../helpers";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import { Logo, ToggleSwitch } from '../components';
@@ -8,7 +8,7 @@ import { Letter } from "../interfaces";
 import { difficulties, keyboard, langs, translations, words } from "../data";
 import { difficulty, lang, letter } from "../definitions";
 import { createI18n } from "../packages/i18n";
-import { success as successSound } from "../sounds";
+import { success as successSound, kiblyAdventuresBackgroundMp3, kiblyAdventuresBackgroundOgg } from "../sounds";
 import { Driver, driver, DriveStep } from "driver.js";
 import "driver.js/dist/driver.css";
 import * as z from "zod";
@@ -19,6 +19,7 @@ const App: Component = () => {
     let grid!: HTMLDivElement;
     let keyboardElement!: HTMLElement;
     let settingsElement!: HTMLButtonElement;
+    let backgroundMusic!: HTMLAudioElement;
 
     // Others
     const langLabels: Record<Lang, string> = { en: "English", es: "Español", fr: "Français" };
@@ -29,6 +30,14 @@ const App: Component = () => {
 
     onMount(() => {
         startTutorialIfNotCompleted();
+
+        backgroundMusic.addEventListener("play", onBackgroundMusicPlay);
+        backgroundMusic.addEventListener("pause", onBackgroundMusicPaused);
+    });
+
+    onCleanup(() => {
+        backgroundMusic.removeEventListener("play", onBackgroundMusicPlay);
+        backgroundMusic.removeEventListener("pause", onBackgroundMusicPlay);
     });
 
     successAudio.preload = "auto";
@@ -316,6 +325,7 @@ const App: Component = () => {
     });
     const [vibrationEnabled, setVibrationEnabled] = createLocalSignal(false, "vibrationEnabled", (data: any): boolean => z.boolean().parse(data));
     const [soundEnabled, setSoundEnabled] = createLocalSignal(false, "soundEnabled", (data: any): boolean => z.boolean().parse(data));
+    const [musicEnabled, setMusicEnabled] = createSignal(false);
     const [t, setLocale] = createI18n<Lang, Translation>(translations, currentLang());
     const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<string>>>>(
         {
@@ -593,10 +603,24 @@ const App: Component = () => {
         setSoundEnabled((previousValue) => !previousValue);
     };
 
+    const onClickToggleMusic = (): void => {
+        triggerVibration();
+        setMusicEnabled((previousValue) => !previousValue);
+
+        if (musicEnabled()) {
+            backgroundMusic.play();
+        } else {
+            backgroundMusic.pause();
+        }
+    };
+
     const navigateToRulesPage = (): void => {
         triggerVibration();
         navigate("/rules");
     };
+
+    const onBackgroundMusicPlay = (): boolean => setMusicEnabled(true);
+    const onBackgroundMusicPaused = (): boolean => setMusicEnabled(false);
 
     // Derived
     const getNumberOfLetters = (): number => currentDifficulty() === "easy" ? 5 : (currentDifficulty() === "medium" ? 6 : 7);
@@ -935,6 +959,11 @@ const App: Component = () => {
                                         isChecked={soundEnabled()}
                                         onToggle={onClickToggleSound}
                                     />
+                                    <ToggleSwitch
+                                        label={t("Music")}
+                                        isChecked={musicEnabled()}
+                                        onToggle={onClickToggleMusic}
+                                    />
                                 </div>
                             </div>
 
@@ -954,6 +983,11 @@ const App: Component = () => {
                     </div>
                 </Show>
             </div>
+            {/* Background music */}
+            <audio ref={backgroundMusic} loop preload="none">
+                <source src={kiblyAdventuresBackgroundOgg} type="audio/ogg" />
+                <source src={kiblyAdventuresBackgroundMp3} type="audio/mp3" />
+            </audio>
         </div >
     );
 };
