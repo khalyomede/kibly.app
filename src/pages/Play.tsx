@@ -716,7 +716,7 @@ const App: Component = () => {
                         ref={settingsElement}
                         onClick={onClickSettings}
                         aria-label="Open settings"
-                        class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 md:w-11 md:h-11 hover:cursor-pointer"
+                        class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 md:w-11 md:h-11 hover:cursor-pointer z-3"
                     >
                         <Settings width="18" height="18" />
                     </button>
@@ -724,7 +724,7 @@ const App: Component = () => {
                 {/* Middle / game area */}
                 <main class="flex-shrink min-h-0 flex flex-col items-center justify-center gap-6 md:gap-0">
                     {/* Grid */}
-                    <div class="w-full flex items-center px-2 md:px-6">
+                    <div class="w-full flex items-center px-2 md:px-6 z-1">
                         <div ref={grid} classList={{
                             "grid": true,
                             "w-full": true,
@@ -775,7 +775,7 @@ const App: Component = () => {
                     </div>
                 </main>
                 {/* Replay/Abort */}
-                <div class="flex-shrink flex justify-center my-4 md:my-8 lg:my-6">
+                <div class="flex-shrink flex justify-center my-4 md:my-8 lg:my-6 z-2">
                     <Switch>
                         <Match when={gameFinished()}>
                             <button onClick={onClickReplay} class="px-6 py-2 uppercase rounded-xl md:rounded-2xl lg:rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 tracking-wider flex items-center gap-2 md:px-8 md:py-2 md:text-lg hover:cursor-pointer">
@@ -792,7 +792,7 @@ const App: Component = () => {
                     </Switch>
                 </div>
                 {/* Keyboard/Win-loose text */}
-                <div class="my-auto">
+                <div class="my-auto z-3">
                     <Switch>
                         <Match when={!gameFinished()}>
                             <footer ref={keyboardElement} class="shrink-0 pb-[env(safe-area-inset-bottom)] grid grid-rows-3 grid-cols-10 gap-1 mb-4 md:mb-6 px-4 md:gap-2 lg:gap-1 md:px-6">
