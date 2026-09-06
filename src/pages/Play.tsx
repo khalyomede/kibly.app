@@ -885,7 +885,7 @@ const App: Component = () => {
                                     type="button"
                                     onClick={onClickCloseSettings}
                                     aria-label="Close settings"
-                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 dark:text-sky-100 border-2 border-slate-200 dark:border-sky-700 hover:cursor-pointer"
+                                    class="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 dark:text-sky-100 border-2 border-slate-200 dark:border-sky-700 hover:cursor-pointer"
                                 >
                                     <X width="18" height="18" />
                                 </button>
