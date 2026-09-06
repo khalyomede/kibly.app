@@ -771,9 +771,8 @@ const App: Component = () => {
                                     classList={{
                                         "aspect-square": true,
                                         "border": true,
-                                        "rounded-2xl": true,
-                                        "md:rounded-3xl": true,
-                                        "lg:rounded-2xl": true,
+                                        "rounded-3xl": true,
+                                        "lg:rounded-3xl": true,
                                         "flex": true,
                                         "items-center": true,
                                         "justify-center": true,
