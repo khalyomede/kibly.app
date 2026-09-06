@@ -1,5 +1,5 @@
 import { For, Index, Match, Show, Switch, createSignal, onCleanup, onMount, type Component } from 'solid-js';
-import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, createPrefersDarkTheme, prefersReducedMotion, vibrate } from "../helpers";
+import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, createKeyboardListener, createPrefersDarkTheme, prefersReducedMotion, vibrate } from "../helpers";
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import { Logo, ToggleSwitch } from '../components';
 import { kiblyBackgroundMobilePng, kiblyBackgroundMobileDarkPng, kiblyBackgroundDesktopPng, kiblyBackgroundDesktopDarkPng, kiblyBackgroundMobileWebp, kiblyBackgroundMobileDarkWebp, kiblyBackgroundDesktopWebp, kiblyBackgroundDesktopDarkWebp } from "../images";
@@ -551,6 +551,8 @@ const App: Component = () => {
         setlettersToGuess(lang, difficulty, indexOfNextLetterToGuess, nextLetterToGuess);
         moveToNextTutorialStepIfExpectedKeyIsClicked(key);
     };
+
+    createKeyboardListener(onKeyboardClick, settingsOpen);
 
     const onClickReplay = (): void => {
         const lang: Lang = currentLang();
