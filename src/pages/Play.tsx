@@ -607,6 +607,8 @@ const App: Component = () => {
         triggerVibration();
         setMusicEnabled((previousValue) => !previousValue);
 
+        backgroundMusic.volume = 0.2;
+
         if (musicEnabled()) {
             backgroundMusic.play();
         } else {
