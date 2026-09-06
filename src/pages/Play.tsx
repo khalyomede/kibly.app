@@ -740,7 +740,7 @@ const App: Component = () => {
                         ref={settingsElement}
                         onClick={onClickSettings}
                         aria-label="Open settings"
-                        class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 md:w-11 md:h-11 hover:cursor-pointer z-3"
+                        class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl md:rounded-2xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 md:w-11 md:h-11 hover:cursor-pointer z-3"
                     >
                         <Settings width="18" height="18" />
                     </button>
