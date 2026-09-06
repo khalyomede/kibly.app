@@ -804,13 +804,13 @@ const App: Component = () => {
                 <div class="flex-shrink flex justify-center my-4 md:my-8 lg:my-6 z-2">
                     <Switch>
                         <Match when={gameFinished()}>
-                            <button onClick={onClickReplay} class="px-6 py-2 uppercase rounded-xl md:rounded-2xl lg:rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 tracking-wider flex items-center gap-2 md:px-4 md:py-2 sm:text-lg md:text-base hover:cursor-pointer">
+                            <button onClick={onClickReplay} class="px-6 py-2 uppercase rounded-2xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 tracking-wider flex items-center gap-2 md:px-4 md:py-2 sm:text-lg md:text-base hover:cursor-pointer">
                                 <span>{t("Replay")}</span>
                                 <RefreshCcw width="16" height="16" />
                             </button>
                         </Match>
                         <Match when={!gameFinished()}>
-                            <button onClick={onClickChange} class="px-6 py-2 uppercase rounded-xl md:rounded-2xl lg:rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 tracking-wider flex items-center gap-2 md:px-8 md:py-2 sm:text-sm lg:text-sm hover:cursor-pointer">
+                            <button onClick={onClickChange} class="px-6 py-2 uppercase rounded-2xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 tracking-wider flex items-center gap-2 md:px-8 md:py-2 sm:text-sm lg:text-sm hover:cursor-pointer">
                                 <span>{t("Change")}</span>
                                 <RefreshCw width="16" height="16" />
                             </button>
