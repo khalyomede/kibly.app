@@ -58,6 +58,7 @@ interface Translation {
     "Next": () => string;
     "Done": () => string;
     "Music": () => string;
+    "The word was: {word}": (word: string) => string;
 };
 
 export default Translation;

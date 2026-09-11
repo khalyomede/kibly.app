@@ -13,6 +13,7 @@ import { Driver, driver, DriveStep } from "driver.js";
 import "driver.js/dist/driver.css";
 import * as z from "zod";
 import { useNavigate } from '@solidjs/router';
+import Dialog from '@corvu/dialog';
 
 const App: Component = () => {
     // Refs
@@ -355,6 +356,8 @@ const App: Component = () => {
     const [vibrationEnabled, setVibrationEnabled] = createLocalSignal(false, "vibrationEnabled", (data: any): boolean => z.boolean().parse(data));
     const [soundEnabled, setSoundEnabled] = createLocalSignal(false, "soundEnabled", (data: any): boolean => z.boolean().parse(data));
     const [musicEnabled, setMusicEnabled] = createSignal(false);
+    const [changeDialogOpen, setChangeDialogOpen] = createSignal(false);
+    const [lastWordToGuess, setLastWordToGuess] = createSignal("");
     const [t, setLocale] = createI18n<Lang, Translation>(translations, currentLang());
     const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<string>>>>(
         {
@@ -621,11 +624,12 @@ const App: Component = () => {
         const difficulty: Difficulty = currentDifficulty();
         const wordToGuess: string = currentWordToGuess[lang][difficulty];
 
+        setLastWordToGuess(wordToGuess);
         animateButton(changeButton);
 
         onClickReplay();
 
-        alert(`The word was ${wordToGuess}`);
+        setChangeDialogOpen(true);
     };
 
     const onClickSettings = (): void => {
@@ -1050,7 +1054,24 @@ const App: Component = () => {
                 <source src={kiblyAdventuresBackgroundOgg} type="audio/ogg" />
                 <source src={kiblyAdventuresBackgroundMp3} type="audio/mp3" />
             </audio>
-        </div >
+            {/* Change dialog */}
+            <Dialog
+                open={changeDialogOpen()}
+                onOpenChange={setChangeDialogOpen}
+            >
+                <Dialog.Portal>
+                    <Dialog.Overlay class="fixed inset-0 z-50 bg-orange-50/72 dark:bg-slate-900/72" />
+                    <Dialog.Content class="fixed inset-x-4 top-1/2 z-50 -translate-y-1/2 rounded-3xl border-2 border-slate-300 bg-orange-50 px-5 py-4 text-center shadow-2xl dark:border-sky-700 dark:bg-sky-900 md:left-1/2 md:w-full sm:max-w-xs md:max-w-sm md:-translate-x-1/2">
+                        <Dialog.Label class="text-lg tracking-wide text-slate-700 dark:text-sky-50">
+                            {t("The word was: {word}", lastWordToGuess())}
+                        </Dialog.Label>
+                        <Dialog.Close class="mt-4 rounded-xl border-2 border-slate-300 bg-white/70 px-4 py-2 text-sm text-slate-600 hover:cursor-pointer dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200">
+                            {t("Replay")}
+                        </Dialog.Close>
+                    </Dialog.Content>
+                </Dialog.Portal>
+            </Dialog>
+        </div>
     );
 };
 

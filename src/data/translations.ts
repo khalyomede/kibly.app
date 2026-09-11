@@ -61,6 +61,7 @@ const translations: Record<Lang, Translation> = {
         "Next": (): string => "Next",
         "Done": (): string => "Next",
         "Music": (): string => "Music",
+        "The word was: {word}": (word: string): string => `The word was: ${word}`,
     },
     "es": {
         "Play now": (): string => "Jugar ahora",
@@ -122,6 +123,7 @@ const translations: Record<Lang, Translation> = {
         "Next": (): string => "Siguiente",
         "Done": (): string => "Listo",
         "Music": (): string => "Música",
+        "The word was: {word}": (word: string): string => `La palabra era: ${word}`,
     },
     "fr": {
         "Play now": (): string => "Jouer maintenant",
@@ -183,6 +185,7 @@ const translations: Record<Lang, Translation> = {
         "Next": (): string => "Suivant",
         "Done": (): string => "Terminé",
         "Music": (): string => "Musique",
+        "The word was: {word}": (word: string): string => `Le mot était : ${word}`,
     },
 };
 
