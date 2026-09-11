@@ -830,8 +830,10 @@ const App: Component = () => {
                                     classList={{
                                         "aspect-square": true,
                                         "border": true,
-                                        "rounded-3xl": true,
-                                        "lg:rounded-3xl": true,
+                                        "rounded-3xl": currentDifficulty() !== "hard" && currentDifficulty() !== "medium",
+                                        "rounded-2xl": currentDifficulty() === "hard" || currentDifficulty() === "medium",
+                                        "lg:rounded-3xl": currentDifficulty() !== "hard",
+                                        "lg:rounded-2xl": currentDifficulty() === "hard",
                                         "flex": true,
                                         "items-center": true,
                                         "justify-center": true,
