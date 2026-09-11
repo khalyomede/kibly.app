@@ -22,6 +22,7 @@ const App: Component = () => {
     let backgroundMusic!: HTMLAudioElement;
     let replayButton!: HTMLButtonElement;
     let changeButton!: HTMLButtonElement;
+    let closeSettingsElement!: HTMLButtonElement;
 
     // Others
     const langLabels: Record<Lang, string> = { en: "English", es: "Español", fr: "Français" };
@@ -284,6 +285,32 @@ const App: Component = () => {
         driverObj.drive();
     };
 
+    const animateButton = (element: Key | HTMLButtonElement): void => {
+        const button = element instanceof HTMLButtonElement ? element : document.querySelector(`#keyboard-${element}`);
+
+        if (!button) {
+            return;
+        }
+
+        if (prefersReducedMotion()) {
+            return;
+        }
+
+        button.animate(
+            [
+                { transform: "scale(1)" },
+                { transform: "scale(0.90)", offset: 0.25 },
+                { transform: "scale(1.05)", offset: 0.65 },
+                { transform: "scale(1)", offset: 1 },
+            ],
+            {
+                duration: 480,
+                easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+                fill: "both",
+            }
+        );
+    };
+
     // Stores/signals
     const [flippingTileIndices, setFlippingTileIndices] = createSignal<Set<number>>(new Set());
     const [lettersToGuess, setlettersToGuess] = createLocalStore<Record<Lang, Record<Difficulty, Array<Letter>>>>(
@@ -438,6 +465,10 @@ const App: Component = () => {
                 return;
             }
 
+            if (!prefersReducedMotion()) {
+                animateButton(key);
+            }
+
             triggerVibration();
             playBubble();
             moveToNextTutorialStepIfExpectedKeyIsClicked(key);
@@ -504,6 +535,10 @@ const App: Component = () => {
                 return;
             }
 
+            if (!prefersReducedMotion()) {
+                animateButton(key);
+            }
+
             triggerVibration();
             playBubble();
 
@@ -524,6 +559,10 @@ const App: Component = () => {
                 return;
             }
 
+            if (!prefersReducedMotion()) {
+                animateButton(key);
+            }
+
             triggerVibration();
             playBubble();
 
@@ -542,6 +581,10 @@ const App: Component = () => {
 
         if (wordIsCompleted()) {
             return;
+        }
+
+        if (!prefersReducedMotion()) {
+            animateButton(key);
         }
 
         triggerVibration();
@@ -565,6 +608,7 @@ const App: Component = () => {
         const lang: Lang = currentLang();
         const difficulty: Difficulty = currentDifficulty();
 
+        animateButton(replayButton);
         triggerVibration();
         setCurrentWordToGuess(lang, difficulty, randomWord(lang, difficulty));
         setlettersToGuess(lang, difficulty, createEmptyLetters(5 * getNumberOfLetters()));
@@ -577,17 +621,21 @@ const App: Component = () => {
         const difficulty: Difficulty = currentDifficulty();
         const wordToGuess: string = currentWordToGuess[lang][difficulty];
 
+        animateButton(changeButton);
+
         onClickReplay();
 
         alert(`The word was ${wordToGuess}`);
     };
 
     const onClickSettings = (): void => {
+        animateButton(settingsElement);
         triggerVibration();
         setSettingsOpen(true);
     };
 
     const onClickCloseSettings = (): void => {
+        animateButton(closeSettingsElement);
         triggerVibration();
         setSettingsOpen(false);
     };
@@ -893,6 +941,7 @@ const App: Component = () => {
                             <div class="flex items-center mb-6">
                                 <h2 class="grow text-lg text-slate-700 dark:text-sky-50 tracking-wide md:text-xl">{t("Settings")}</h2>
                                 <button
+                                    ref={closeSettingsElement}
                                     type="button"
                                     onClick={onClickCloseSettings}
                                     aria-label="Close settings"
