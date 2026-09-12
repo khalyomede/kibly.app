@@ -484,6 +484,7 @@ const App: Component = () => {
                 if (gameWon()) {
                     if (soundEnabled()) {
                         successAudio.currentTime = 0;
+                        successAudio.volume = 0.2;
                         void successAudio.play();
                     }
 
