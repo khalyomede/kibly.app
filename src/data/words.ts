@@ -1,4 +1,5 @@
 import { Lang, Difficulty } from "../types";
+import Noun from "../types/Noun";
 
 /**
  * Rules:
@@ -11,7 +12,7 @@ import { Lang, Difficulty } from "../types";
  *   - No duplicate letters (all letters are unique in the word)
  *   - No anglicism in other languages, no frenchism in english words
  */
-const words: Record<Lang, Record<Difficulty, Array<string>>> = {
+const words: Record<Lang, Record<Difficulty, Array<Noun>>> = {
     "en": {
         "easy": [
             "BADGE",

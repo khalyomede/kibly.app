@@ -6,7 +6,7 @@ import { kiblyBackgroundMobilePng, kiblyBackgroundMobileDarkPng, kiblyBackground
 import { Difficulty, Key, Lang, LetterState, Translation } from "../types";
 import { Letter } from "../interfaces";
 import { difficulties, keyboard, langs, translations, words } from "../data";
-import { difficulty, lang, letter } from "../definitions";
+import { difficulty, lang, letter, noun } from "../definitions";
 import { createI18n } from "../packages/i18n";
 import { success as successSound, kiblyAdventuresBackgroundMp3, kiblyAdventuresBackgroundOgg } from "../sounds";
 import { Driver, driver, DriveStep } from "driver.js";
@@ -16,6 +16,7 @@ import { useNavigate } from '@solidjs/router';
 import Dialog from '@corvu/dialog';
 import Drawer from '@corvu/drawer';
 import { createMediaQuery } from '@solid-primitives/media';
+import Noun from '../types/Noun';
 
 const App: Component = () => {
     // Refs
@@ -50,9 +51,9 @@ const App: Component = () => {
     successAudio.load();
 
     // Helpers
-    const randomWord = (lang: Lang, difficulty: Difficulty): string => {
-        const alreadyGuessedWords = guessedWords[lang][difficulty];
-        const selectedWords = words[lang][difficulty].filter((word: string): boolean => !alreadyGuessedWords.includes(word));
+    const randomWord = (lang: Lang, difficulty: Difficulty): Noun => {
+        const alreadyGuessedWords: Array<Noun> = guessedWords[lang][difficulty];
+        const selectedWords: Array<Noun> = words[lang][difficulty].filter((word: Noun): boolean => !alreadyGuessedWords.includes(word));
 
         if (selectedWords.length === 0) {
             setGuessedWords(lang, difficulty, []);
@@ -255,8 +256,8 @@ const App: Component = () => {
         }
 
         const lang: Lang = currentLang();
-        let wordToGuess: string = "";
-        let word: string = "";
+        let wordToGuess: Noun = "BREAD";
+        let word: string = "BOARD";
 
         if (lang === "en") {
             wordToGuess = "BREAD";
@@ -359,9 +360,9 @@ const App: Component = () => {
     const [soundEnabled, setSoundEnabled] = createLocalSignal(false, "soundEnabled", (data: any): boolean => z.boolean().parse(data));
     const [musicEnabled, setMusicEnabled] = createSignal(false);
     const [changeDialogOpen, setChangeDialogOpen] = createSignal(false);
-    const [lastWordToGuess, setLastWordToGuess] = createSignal("");
+    const [lastWordToGuess, setLastWordToGuess] = createSignal<Noun>("BOARD");
     const [t, setLocale] = createI18n<Lang, Translation>(translations, currentLang());
-    const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<string>>>>(
+    const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<Noun>>>>(
         {
             "en": {
                 "easy": [],
@@ -380,10 +381,10 @@ const App: Component = () => {
             },
         },
         "guessedWords",
-        (data: any) => z.record(lang, z.record(difficulty, z.array(z.string()))).parse(data),
+        (data: any) => z.record(lang, z.record(difficulty, z.array(noun))).parse(data),
     );
 
-    const [currentWordToGuess, setCurrentWordToGuess] = createLocalStore(
+    const [currentWordToGuess, setCurrentWordToGuess] = createLocalStore<Record<Lang, Record<Difficulty, Noun>>>(
         {
             "fr": {
                 "easy": randomWord("fr", "easy"),
@@ -402,11 +403,11 @@ const App: Component = () => {
             }
         },
         "wordToGuess",
-        (data: any): Record<Lang, Record<Difficulty, string>> => z.record(
+        (data: any): Record<Lang, Record<Difficulty, Noun>> => z.record(
             lang,
             z.record(
                 difficulty,
-                z.string()
+                noun
             )
         ).parse(data)
     );
@@ -625,13 +626,11 @@ const App: Component = () => {
     const onClickChange = (): void => {
         const lang: Lang = currentLang();
         const difficulty: Difficulty = currentDifficulty();
-        const wordToGuess: string = currentWordToGuess[lang][difficulty];
+        const wordToGuess: Noun = currentWordToGuess[lang][difficulty];
 
         setLastWordToGuess(wordToGuess);
         animateButton(changeButton);
-
         onClickReplay();
-
         setChangeDialogOpen(true);
     };
 
@@ -703,7 +702,7 @@ const App: Component = () => {
     const wordGuessed = (): boolean => {
         const lang = currentLang();
         const difficulty = currentDifficulty();
-        const wordToGuess = currentWordToGuess[lang][difficulty];
+        const wordToGuess: Noun = currentWordToGuess[lang][difficulty];
 
         return lettersToGuess[lang][difficulty]
             .filter((letter: Letter): boolean => letter.state === "good")
@@ -730,7 +729,7 @@ const App: Component = () => {
         .filter((letter: Letter): boolean => letter.state === "bad")
         .map((letter: Letter): string => letter.value);
 
-    const wordToGuess = (): string => currentWordToGuess[currentLang()][currentDifficulty()];
+    const wordToGuess = (): Noun => currentWordToGuess[currentLang()][currentDifficulty()];
 
     const canDelete = (): boolean => lettersToGuess[currentLang()][currentDifficulty()]
         .filter((letter: Letter): boolean => letter.state === "guessed").length > 0;
