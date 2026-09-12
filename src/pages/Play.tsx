@@ -346,6 +346,9 @@ const App: Component = () => {
     );
 
     const [settingsOpen, setSettingsOpen] = createSignal(false);
+    const [resultDialogOpen, setResultDialogOpen] = createSignal(false);
+    const [resultDialogType, setResultDialogType] = createSignal<"won" | "lost" | "changed">("won");
+    const [resultDialogHintsUsed, setResultDialogHintsUsed] = createSignal(0);
     const [currentDifficulty, setCurrentDifficulty] = createLocalSignal("easy", "difficulty", (data: any): Difficulty => difficulty.parse(data));
     const [currentLang, setCurrentLang] = createLocalSignal("en", "lang", (data: any) => {
         let savedLang = "en";
@@ -359,7 +362,6 @@ const App: Component = () => {
     const [vibrationEnabled, setVibrationEnabled] = createLocalSignal(false, "vibrationEnabled", (data: any): boolean => z.boolean().parse(data));
     const [soundEnabled, setSoundEnabled] = createLocalSignal(false, "soundEnabled", (data: any): boolean => z.boolean().parse(data));
     const [musicEnabled, setMusicEnabled] = createSignal(false);
-    const [changeDialogOpen, setChangeDialogOpen] = createSignal(false);
     const [lastWordToGuess, setLastWordToGuess] = createSignal<Noun>("BOARD");
     const [t, setLocale] = createI18n<Lang, Translation>(translations, currentLang());
     const [guessedWords, setGuessedWords] = createLocalStore<Record<Lang, Record<Difficulty, Array<Noun>>>>(
@@ -485,6 +487,8 @@ const App: Component = () => {
 
             const finalizeValidation = (): void => {
                 if (gameWon()) {
+                    const hintsUsed = numberOfHintsUsed[lang][difficulty];
+
                     if (soundEnabled()) {
                         successAudio.currentTime = 0;
                         successAudio.volume = 0.2;
@@ -495,13 +499,20 @@ const App: Component = () => {
 
                     setGuessedWords(lang, difficulty, [...existingGuessedWords, wordToGuess()]);
                     triggerVibration([40, 60, 40, 60, 80]);
-                    replayButton.focus();
+                    setResultDialogHintsUsed(hintsUsed);
+                    setResultDialogType("won");
+                    setLastWordToGuess(wordToGuess());
+                    resetGame();
+                    setResultDialogOpen(true);
 
                     return;
                 }
 
                 if (gameLost()) {
-                    replayButton.focus();
+                    setLastWordToGuess(wordToGuess());
+                    setResultDialogType("lost");
+                    resetGame();
+                    setResultDialogOpen(true);
                 }
             };
 
@@ -611,16 +622,20 @@ const App: Component = () => {
 
     createKeyboardListener(onKeyboardClick, settingsOpen);
 
-    const onClickReplay = (): void => {
+    const resetGame = (): void => {
         const lang: Lang = currentLang();
         const difficulty: Difficulty = currentDifficulty();
 
-        animateButton(replayButton);
-        triggerVibration();
         setCurrentWordToGuess(lang, difficulty, randomWord(lang, difficulty));
         setlettersToGuess(lang, difficulty, createEmptyLetters(5 * getNumberOfLetters()));
         setFlippingTileIndices(new Set<number>());
         setNumberOfHintsUsed(lang, difficulty, 0);
+    };
+
+    const onClickReplay = (): void => {
+        animateButton(replayButton);
+        triggerVibration();
+        resetGame();
     };
 
     const onClickChange = (): void => {
@@ -628,10 +643,11 @@ const App: Component = () => {
         const difficulty: Difficulty = currentDifficulty();
         const wordToGuess: Noun = currentWordToGuess[lang][difficulty];
 
+        setResultDialogType("changed");
         setLastWordToGuess(wordToGuess);
         animateButton(changeButton);
-        onClickReplay();
-        setChangeDialogOpen(true);
+        resetGame();
+        setResultDialogOpen(true);
     };
 
     const onClickSettings = (): void => {
@@ -1065,19 +1081,6 @@ const App: Component = () => {
                                 </Index>
                             </footer>
                         </Match>
-                        <Match when={gameLost()}>
-                            <footer class="flex items-center justify-center gap-2 text-xl md:text-2xl py-6 dark:text-sky-200">
-                                <span class="tracking-wide">{t("Word was: {word}", wordToGuess())}</span>
-                            </footer>
-                        </Match>
-                        <Match when={gameWon()}>
-                            <footer class="flex flex-col items-center justify-center gap-2 text-xl md:text-2xl py-6 text-orange-900 dark:text-sky-200">
-                                <div class="tracking-wide">{t("You found it!")}</div>
-                                <Show when={numberOfHintsUsed[currentLang()][currentDifficulty()] > 0}>
-                                    <div class="text-sm text-orange-700 dark:text-sky-500">{t("{count} hints used", numberOfHintsUsed[currentLang()][currentDifficulty()])}</div>
-                                </Show>
-                            </footer>
-                        </Match>
                     </Switch>
                 </div>
 
@@ -1134,17 +1137,35 @@ const App: Component = () => {
                 <source src={kiblyAdventuresBackgroundOgg} type="audio/ogg" />
                 <source src={kiblyAdventuresBackgroundMp3} type="audio/mp3" />
             </audio>
-            {/* Change dialog */}
+            {/* Result / Change dialog */}
             <Dialog
-                open={changeDialogOpen()}
-                onOpenChange={setChangeDialogOpen}
+                open={resultDialogOpen()}
+                onOpenChange={setResultDialogOpen}
             >
                 <Dialog.Portal>
                     <Dialog.Overlay class="fixed inset-0 z-50 bg-orange-50/72 dark:bg-slate-900/72" />
                     <Dialog.Content class="fixed inset-x-4 top-1/2 z-50 -translate-y-1/2 rounded-3xl border-2 border-slate-300 bg-orange-50 px-5 py-4 text-center shadow-2xl dark:border-sky-700 dark:bg-sky-900 md:left-1/2 md:w-full sm:max-w-xs md:max-w-sm md:-translate-x-1/2">
                         <Dialog.Label class="text-lg tracking-wide text-slate-700 dark:text-sky-50">
-                            {t("The word was: {word}", lastWordToGuess())}
+                            <Show when={resultDialogType() === "won"}>
+                                <div class="mb-2">
+                                    {t("You found it!")}
+                                </div>
+                            </Show>
+                            <div class="mt-2">
+                                {t("The word was: {word}", lastWordToGuess())}
+                            </div>
                         </Dialog.Label>
+
+                        <Show
+                            when={
+                                resultDialogType() === "won" &&
+                                resultDialogHintsUsed() > 0
+                            }
+                        >
+                            <div class="mt-2 text-sm text-orange-700 dark:text-sky-500">
+                                {t("{count} hints used", resultDialogHintsUsed())}
+                            </div>
+                        </Show>
                         <Dialog.Close class="mt-4 rounded-xl border-2 border-slate-300 bg-white/70 px-4 py-2 text-sm text-slate-600 hover:cursor-pointer dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200">
                             {t("Replay")}
                         </Dialog.Close>

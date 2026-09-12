@@ -6,7 +6,6 @@ interface Translation {
     "Delete": () => string;
     "Validate": () => string;
     "hint": () => string;
-    "Word was: {word}": (word: string) => string;
     "You found it!": () => string;
     "Settings": () => string;
     "Easy": () => string;
