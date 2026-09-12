@@ -7,10 +7,12 @@
         "start": "vite --host",
         "dev": "vite --host",
         "build": "vite build",
-        "serve": "vite preview"
+        "serve": "vite preview",
+        "ai": "node scripts/build-ai-md.mjs"
     },
     "license": "MIT",
     "devDependencies": {
+        "@corvu/dialog": "0.2.4",
         "@sentry/solid": "10.70.0",
         "@solidjs/router": "1.0.0",
         "@tailwindcss/vite": "4.3.3",
