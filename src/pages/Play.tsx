@@ -14,6 +14,8 @@ import "driver.js/dist/driver.css";
 import * as z from "zod";
 import { useNavigate } from '@solidjs/router';
 import Dialog from '@corvu/dialog';
+import Drawer from '@corvu/drawer';
+import { createMediaQuery } from '@solid-primitives/media';
 
 const App: Component = () => {
     // Refs
@@ -28,9 +30,9 @@ const App: Component = () => {
     // Others
     const langLabels: Record<Lang, string> = { en: "English", es: "Español", fr: "Français" };
     const successAudio = new Audio(successSound);
-    const prefersDarkTheme = createPrefersDarkTheme();
     let driverObj: Driver | null = null;
     const navigate = useNavigate();
+    const isDesktop = createMediaQuery("(min-width: 768px)");
 
     onMount(() => {
         startTutorialIfNotCompleted();
@@ -739,6 +741,147 @@ const App: Component = () => {
     const canHint = (): boolean => lettersToGuess[currentLang()][currentDifficulty()]
         .filter((letter: Letter): boolean => letter.state === "guessed").length < wordToGuess().length;
 
+    // Components
+    const SettingsContent: Component = () => (
+        <>
+            <div class="flex items-center mb-6">
+                <h2 class="grow text-lg text-slate-700 dark:text-sky-50 tracking-wide md:text-xl">
+                    {t("Settings")}
+                </h2>
+
+                <button
+                    ref={closeSettingsElement}
+                    type="button"
+                    onClick={onClickCloseSettings}
+                    aria-label="Close settings"
+                    class="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 dark:text-sky-100 border-2 border-slate-200 dark:border-sky-700 hover:cursor-pointer"
+                >
+                    <X width="18" height="18" />
+                </button>
+            </div>
+
+            {/* Language */}
+            <div class="mb-6">
+                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">
+                    Language
+                </div>
+
+                <div class="grid grid-cols-3 gap-2">
+                    <For each={langs}>
+                        {(lang) => (
+                            <button
+                                type="button"
+                                onClick={() => onClickSaveLang(lang)}
+                                classList={{
+                                    "px-2": true,
+                                    "py-2": true,
+                                    "rounded-xl": true,
+                                    "border-2": true,
+                                    "text-sm": true,
+                                    "tracking-wide": true,
+                                    "hover:cursor-pointer": true,
+                                    "border-green-800 bg-green-600 text-green-50 dark:border-green-800 dark:bg-green-700 dark:text-green-50":
+                                        currentLang() === lang,
+                                    "border-slate-300 bg-white/70 text-slate-600 dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200":
+                                        currentLang() !== lang,
+                                }}
+                            >
+                                {langLabels[lang]}
+                            </button>
+                        )}
+                    </For>
+                </div>
+            </div>
+
+            {/* Difficulty */}
+            <div class="mb-6">
+                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">
+                    Difficulty
+                </div>
+
+                <div class="grid grid-cols-3 gap-2">
+                    <For each={difficulties}>
+                        {(difficulty) => (
+                            <button
+                                type="button"
+                                onClick={() => onClickSaveDifficulty(difficulty)}
+                                classList={{
+                                    "px-2": true,
+                                    "py-2": true,
+                                    "rounded-xl": true,
+                                    "border-2": true,
+                                    "text-sm": true,
+                                    "tracking-wide": true,
+                                    "hover:cursor-pointer": true,
+                                    "border-green-800 bg-green-600 text-green-50 dark:border-green-800 dark:bg-green-700 dark:text-green-50":
+                                        currentDifficulty() === difficulty,
+                                    "border-slate-300 bg-white/70 text-slate-600 dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200":
+                                        currentDifficulty() !== difficulty,
+                                }}
+                            >
+                                <Switch>
+                                    <Match when={difficulty === "easy"}>
+                                        {t("Easy")}
+                                    </Match>
+
+                                    <Match when={difficulty === "medium"}>
+                                        {t("Medium")}
+                                    </Match>
+
+                                    <Match when={difficulty === "hard"}>
+                                        {t("Hard")}
+                                    </Match>
+                                </Switch>
+                            </button>
+                        )}
+                    </For>
+                </div>
+            </div>
+
+            {/* Vibration / Sound / Music */}
+            <div>
+                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">
+                    {t("Controls")}
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <ToggleSwitch
+                        label={t("Vibration")}
+                        isChecked={vibrationEnabled()}
+                        onToggle={onClickToggleVibration}
+                    />
+
+                    <ToggleSwitch
+                        label={t("Sound")}
+                        isChecked={soundEnabled()}
+                        onToggle={onClickToggleSound}
+                    />
+
+                    <ToggleSwitch
+                        label={t("Music")}
+                        isChecked={musicEnabled()}
+                        onToggle={onClickToggleMusic}
+                    />
+                </div>
+            </div>
+
+            {/* Help */}
+            <div class="mt-6">
+                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">
+                    {t("Help")}
+                </div>
+
+                <button
+                    type="button"
+                    onClick={navigateToRulesPage}
+                    class="px-4 py-2 rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 text-sm tracking-wide hover:cursor-pointer"
+                >
+                    {t("View rules")}
+                </button>
+            </div>
+        </>
+    );
+
     return (
         <div class="play-page relative min-h-dvh bg-orange-50 flex justify-center overflow-hidden">
             <picture class="fixed inset-0 -z-0">
@@ -940,114 +1083,51 @@ const App: Component = () => {
                 </div>
 
                 {/* Settings sheet */}
-                <Show when={settingsOpen()}>
-                    <div class="fixed inset-0 z-50 flex flex-col justify-end md:items-center md:justify-center" role="dialog" aria-modal="true" aria-label="Settings">
-                        <div class="sheet-backdrop absolute inset-0 bg-slate-900/40" onClick={() => setSettingsOpen(false)}></div>
-                        <div class="sheet-panel relative bg-orange-50 dark:bg-sky-900 rounded-t-3xl border-t-2 border-slate-200 dark:border-sky-700 px-5 pt-3 pb-8 shadow-2xl md:w-full md:max-w-md md:rounded-3xl md:border md:border-t-2 md:px-8 md:py-8">
-                            <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300 dark:bg-sky-700 md:hidden"></div>
-                            <div class="flex items-center mb-6">
-                                <h2 class="grow text-lg text-slate-700 dark:text-sky-50 tracking-wide md:text-xl">{t("Settings")}</h2>
-                                <button
-                                    ref={closeSettingsElement}
-                                    type="button"
-                                    onClick={onClickCloseSettings}
-                                    aria-label="Close settings"
-                                    class="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 dark:text-sky-100 border-2 border-slate-200 dark:border-sky-700 hover:cursor-pointer"
-                                >
-                                    <X width="18" height="18" />
-                                </button>
-                            </div>
+                <Show
+                    when={!isDesktop()}
+                    fallback={
+                        <Dialog
+                            open={settingsOpen()}
+                            onOpenChange={setSettingsOpen}
+                        >
+                            <Dialog.Portal>
+                                <Dialog.Overlay class="fixed inset-0 z-50 bg-slate-900/40" />
 
-                            {/* Language */}
-                            <div class="mb-6">
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">Language</div>
-                                <div class="grid grid-cols-3 gap-2">
-                                    <For each={langs}>
-                                        {(lang) => <button
-                                            type="button"
-                                            onClick={() => onClickSaveLang(lang)}
-                                            classList={{
-                                                "px-2": true,
-                                                "py-2": true,
-                                                "rounded-xl": true,
-                                                "border-2": true,
-                                                "text-sm": true,
-                                                "tracking-wide": true,
-                                                "hover:cursor-pointer": true,
-                                                "border-green-800 bg-green-600 text-green-50 dark:border-green-800 dark:bg-green-700 dark:text-green-50": currentLang() === lang,
-                                                "border-slate-300 bg-white/70 text-slate-600 dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200": currentLang() !== lang,
-                                            }}
-                                        >{langLabels[lang]}</button>}
-                                    </For>
-                                </div>
-                            </div>
+                                <Dialog.Content class="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-3xl border-2 border-slate-200 bg-orange-50 px-8 py-8 shadow-2xl dark:border-sky-700 dark:bg-sky-900">
+                                    <SettingsContent />
+                                </Dialog.Content>
+                            </Dialog.Portal>
+                        </Dialog>
+                    }
+                >
+                    <Drawer
+                        open={settingsOpen()}
+                        onOpenChange={setSettingsOpen}
+                    >
+                        <Drawer.Portal>
+                            <Drawer.Overlay class="fixed inset-0 z-50 bg-slate-900/40" />
 
-                            {/* Difficulty */}
-                            <div class="mb-6">
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">Difficulty</div>
-                                <div class="grid grid-cols-3 gap-2">
-                                    <For each={difficulties}>
-                                        {(difficulty) => <button
-                                            type="button"
-                                            onClick={() => onClickSaveDifficulty(difficulty)}
-                                            classList={{
-                                                "px-2": true,
-                                                "py-2": true,
-                                                "rounded-xl": true,
-                                                "border-2": true,
-                                                "text-sm": true,
-                                                "tracking-wide": true,
-                                                "hover:cursor-pointer": true,
-                                                "border-green-800 bg-green-600 text-green-50 dark:border-green-800 dark:bg-green-700 dark:text-green-50": currentDifficulty() === difficulty,
-                                                "border-slate-300 bg-white/70 text-slate-600 dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200": currentDifficulty() !== difficulty,
-                                            }}
-                                        >
-                                            <Switch>
-                                                <Match when={difficulty === "easy"}>{t("Easy")}</Match>
-                                                <Match when={difficulty === "medium"}>{t("Medium")}</Match>
-                                                <Match when={difficulty === "hard"}>{t("Hard")}</Match>
-                                            </Switch>
-                                        </button>}
-                                    </For>
-                                </div>
-                            </div>
+                            <Drawer.Content
+                                class="
+                    fixed inset-x-0 bottom-0 z-50
+                    rounded-t-3xl border-t-2 border-slate-200
+                    bg-orange-50 px-5 pt-3 pb-8 shadow-2xl
+                    dark:border-sky-700 dark:bg-sky-900
 
-                            {/* Vibration / Sound */}
-                            <div>
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">{t("Controls")}</div>
-                                <div class="flex flex-col gap-4">
-                                    <ToggleSwitch
-                                        label={t("Vibration")}
-                                        isChecked={vibrationEnabled()}
-                                        onToggle={onClickToggleVibration}
-                                    />
-                                    <ToggleSwitch
-                                        label={t("Sound")}
-                                        isChecked={soundEnabled()}
-                                        onToggle={onClickToggleSound}
-                                    />
-                                    <ToggleSwitch
-                                        label={t("Music")}
-                                        isChecked={musicEnabled()}
-                                        onToggle={onClickToggleMusic}
-                                    />
-                                </div>
-                            </div>
+                    data-transitioning:transition-transform
+                    data-transitioning:duration-300
+                    data-transitioning:ease-[cubic-bezier(0.32,0.72,0,1)]
+                "
+                            >
+                                <div
+                                    class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-300 dark:bg-sky-700"
+                                    aria-hidden="true"
+                                />
 
-                            {/* Help */}
-                            <div class="mt-6">
-                                <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">{t("Help")}</div>
-                                <button
-                                    type="button"
-                                    onClick={navigateToRulesPage}
-                                    class="px-4 py-2 rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 text-sm tracking-wide hover:cursor-pointer"
-                                >
-                                    {t("View rules")}
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
+                                <SettingsContent />
+                            </Drawer.Content>
+                        </Drawer.Portal>
+                    </Drawer>
                 </Show>
             </div>
             {/* Background music */}
