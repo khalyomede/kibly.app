@@ -4,6 +4,7 @@ import langs from "./langs";
 import letterStates from "./letter-states";
 import nouns from "./nouns";
 import translations from "./translations";
+import wordInfos from "./word-infos";
 import words from "./words";
 
 export {
@@ -13,5 +14,6 @@ export {
     letterStates,
     nouns,
     translations,
+    wordInfos,
     words,
 };

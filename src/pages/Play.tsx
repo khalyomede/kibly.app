@@ -5,7 +5,7 @@ import { Logo, ToggleSwitch } from '../components';
 import { kiblyBackgroundMobilePng, kiblyBackgroundMobileDarkPng, kiblyBackgroundDesktopPng, kiblyBackgroundDesktopDarkPng, kiblyBackgroundMobileWebp, kiblyBackgroundMobileDarkWebp, kiblyBackgroundDesktopWebp, kiblyBackgroundDesktopDarkWebp } from "../images";
 import { Difficulty, Key, Lang, LetterState, Translation } from "../types";
 import { Letter } from "../interfaces";
-import { difficulties, keyboard, langs, translations, words } from "../data";
+import { difficulties, keyboard, langs, translations, words, wordInfos } from "../data";
 import { difficulty, lang, letter, noun } from "../definitions";
 import { createI18n } from "../packages/i18n";
 import { success as successSound, kiblyAdventuresBackgroundMp3, kiblyAdventuresBackgroundOgg } from "../sounds";
@@ -1150,6 +1150,15 @@ const App: Component = () => {
                                 <div class="mb-2">
                                     {t("You found it!")}
                                 </div>
+                            </Show>
+                            <Show when={wordInfos[currentLang()][lastWordToGuess()]?.image}>
+                                {(image) => (
+                                    <img
+                                        src={image()}
+                                        alt={lastWordToGuess()}
+                                        class="mx-auto my-4 size-32 rounded-2xl object-cover shadow-md"
+                                    />
+                                )}
                             </Show>
                             <div class="mt-2">
                                 {t("The word was: {word}", lastWordToGuess())}
