@@ -73,3 +73,10 @@ docker compose run --rm magick public/icons/kibly-maskable-icon.png -resize 1024
 docker compose run --rm magick public/icons/kibly-maskable-icon.png -resize 512x512 public/icons/kibly-maskable-icon-512.png
 docker compose run --rm magick public/icons/kibly-maskable-icon.png -resize 192x192 public/icons/kibly-maskable-icon-192.png
 ```
+
+### Word illustration images
+
+```bash
+docker compose run --rm magick mogrify -path src/images/words -resize 120x120 src/images/words/sources/*.png
+docker compose run --rm magick mogrify -path src/images/words -format webp -resize 120x120 -quality 85 src/images/words/sources/*.png
+```

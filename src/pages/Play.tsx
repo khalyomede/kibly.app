@@ -1151,13 +1151,18 @@ const App: Component = () => {
                                     {t("You found it!")}
                                 </div>
                             </Show>
-                            <Show when={wordInfos[currentLang()][lastWordToGuess()]?.image}>
+                            <Show when={wordInfos[currentLang()][lastWordToGuess()]?.imagePng}>
                                 {(image) => (
-                                    <img
-                                        src={image()}
-                                        alt={lastWordToGuess()}
-                                        class="mx-auto my-4 size-32 rounded-2xl object-cover shadow-md"
-                                    />
+                                    <picture>
+                                        <Show when={wordInfos[currentLang()][lastWordToGuess()]?.imageWebp}>
+                                            {(imageWebp) => <source type="image/webp" srcset={imageWebp()} />}
+                                        </Show>
+                                        <img
+                                            src={image()}
+                                            alt={lastWordToGuess()}
+                                            class="mx-auto my-4 size-32 rounded-2xl object-cover shadow-md"
+                                        />
+                                    </picture>
                                 )}
                             </Show>
                             <div class="mt-2">

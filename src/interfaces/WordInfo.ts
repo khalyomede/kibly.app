@@ -1,5 +1,6 @@
 interface WordInfo {
-    image: string;
+    imagePng?: string;
+    imageWebp?: string;
 };
 
 export default WordInfo;
