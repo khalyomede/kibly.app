@@ -462,6 +462,10 @@ const App: Component = () => {
     };
 
     const onKeyboardClick = (key: Key): void => {
+        if (gameFinished()) {
+            return;
+        }
+
         const difficulty: Difficulty = currentDifficulty();
         const lang: Lang = currentLang();
         const numberOfLetters: number = getNumberOfLetters();
