@@ -506,7 +506,6 @@ const App: Component = () => {
                     setResultDialogHintsUsed(hintsUsed);
                     setResultDialogType("won");
                     setLastWordToGuess(wordToGuess());
-                    resetGame();
                     setResultDialogOpen(true);
 
                     return;
@@ -515,7 +514,6 @@ const App: Component = () => {
                 if (gameLost()) {
                     setLastWordToGuess(wordToGuess());
                     setResultDialogType("lost");
-                    resetGame();
                     setResultDialogOpen(true);
                 }
             };
@@ -1149,6 +1147,12 @@ const App: Component = () => {
                 <Dialog.Portal>
                     <Dialog.Overlay class="fixed inset-0 z-50 bg-orange-50/72 dark:bg-slate-900/72" />
                     <Dialog.Content class="fixed inset-x-4 top-1/2 z-50 -translate-y-1/2 rounded-3xl border-2 border-slate-300 bg-orange-50 px-5 py-4 text-center shadow-2xl dark:border-sky-700 dark:bg-sky-900 md:left-1/2 md:w-full sm:max-w-xs md:max-w-sm md:-translate-x-1/2">
+                        <Dialog.Close
+                            aria-label={t("Close")}
+                            class="absolute right-3 top-3 w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 dark:text-sky-100 border-2 border-slate-200 dark:border-sky-700 hover:cursor-pointer"
+                        >
+                            <X width="18" height="18" />
+                        </Dialog.Close>
                         <Dialog.Label class="text-lg tracking-wide text-slate-700 dark:text-sky-50">
                             <Show when={resultDialogType() === "won"}>
                                 <div class="mb-2">
@@ -1184,9 +1188,6 @@ const App: Component = () => {
                                 {t("{count} hints used", resultDialogHintsUsed())}
                             </div>
                         </Show>
-                        <Dialog.Close class="mt-4 rounded-xl border-2 border-slate-300 bg-white/70 px-4 py-2 text-sm text-slate-600 hover:cursor-pointer dark:border-sky-700 dark:bg-sky-800 dark:text-sky-200">
-                            {t("Replay")}
-                        </Dialog.Close>
                     </Dialog.Content>
                 </Dialog.Portal>
             </Dialog>
