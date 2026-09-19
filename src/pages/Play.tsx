@@ -704,7 +704,14 @@ const App: Component = () => {
 
     const navigateToRulesPage = (): void => {
         triggerVibration();
-        navigate("/rules");
+
+        if (typeof document.startViewTransition === "function" && !prefersReducedMotion()) {
+            document.startViewTransition(() => {
+                navigate("/rules");
+            });
+        } else {
+            navigate("/rules");
+        }
     };
 
     const onBackgroundMusicPlay = (): boolean => setMusicEnabled(true);

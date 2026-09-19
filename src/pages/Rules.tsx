@@ -1,7 +1,7 @@
 import { useNavigate } from "@solidjs/router";
 import { Component } from "solid-js";
 import { ArrowLeft } from "lucide-solid";
-import { createLocalSignal, vibrate } from "../helpers";
+import { createLocalSignal, prefersReducedMotion, vibrate } from "../helpers";
 import { lang } from "../definitions";
 import { Lang, Translation } from "../types";
 import { translations } from "../data";
@@ -67,7 +67,14 @@ const Rules: Component = () => {
     // Event listeners
     const navigateBackToPlayPage = (): void => {
         triggerVibration();
-        navigate("/play");
+
+        if (typeof document.startViewTransition === "function" && !prefersReducedMotion()) {
+            document.startViewTransition(() => {
+                navigate("/play");
+            });
+        } else {
+            navigate("/play");
+        }
     };
 
     // Main
