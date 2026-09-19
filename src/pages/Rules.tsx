@@ -79,7 +79,7 @@ const Rules: Component = () => {
                 <button
                     type="button"
                     onClick={navigateBackToPlayPage}
-                    aria-label="Back"
+                    aria-label={t("Back")}
                     class="w-9 h-9 flex items-center justify-center rounded-xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 mb-6 hover:cursor-pointer"
                 >
                     <ArrowLeft width="18" height="18" />

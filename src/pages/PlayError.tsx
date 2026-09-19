@@ -1,8 +1,26 @@
 import { RefreshCw } from "lucide-solid";
 import type { Component } from "solid-js";
 import exhautsedKibly from "../images/exhausted-kibly.png";
+import { createLocalSignal } from "../helpers";
+import { lang } from "../definitions";
+import { Lang, Translation } from "../types";
+import { translations } from "../data";
+import { createI18n } from "../packages/i18n";
 
 const PlayError: Component = () => {
+    // Stores/signals
+    const [currentLang] = createLocalSignal("en", "lang", (rawStoredLang: any): Lang => {
+        let resolvedLang: Lang = "en";
+
+        try {
+            resolvedLang = lang.parse(rawStoredLang);
+        } catch { }
+
+        return resolvedLang;
+    });
+    const [t, setLocale] = createI18n<Lang, Translation>(translations, "en");
+
+    // Event listeners
     const onReset = (): void => {
         localStorage.removeItem("lettersToGuess");
         localStorage.removeItem("difficulty");
@@ -12,6 +30,9 @@ const PlayError: Component = () => {
 
         window.location.reload();
     };
+
+    // Main
+    setLocale(currentLang());
 
     return (
         <main class="min-h-dvh bg-orange-50 dark:bg-sky-950 flex items-center justify-center px-6 py-12">
@@ -26,15 +47,15 @@ const PlayError: Component = () => {
                 </div>
 
                 <h1 class="text-3xl md:text-4xl font-semibold text-slate-700 dark:text-sky-100 tracking-wide">
-                    Oops!
+                    {t("Oops!")}
                 </h1>
 
                 <p class="mt-3 text-xl md:text-2xl text-slate-600 dark:text-sky-300 tracking-wide">
-                    Failed to load your game
+                    {t("Failed to load your game")}
                 </p>
 
                 <p class="mt-2 max-w-xs text-sm md:text-base text-slate-400 dark:text-sky-200">
-                    Something went a little wobbly. Let's try starting the game again.
+                    {t("Something went a little wobbly. Let's try starting the game again.")}
                 </p>
 
                 <button
@@ -61,7 +82,7 @@ const PlayError: Component = () => {
                     "
                 >
                     <RefreshCw width="19" height="19" />
-                    <span>Reset the game</span>
+                    <span>{t("Reset the game")}</span>
                 </button>
             </div>
         </main>

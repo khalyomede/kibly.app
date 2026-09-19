@@ -8,6 +8,8 @@ interface Translation {
     "hint": () => string;
     "You found it!": () => string;
     "Settings": () => string;
+    "Language": () => string;
+    "Difficulty": () => string;
     "Easy": () => string;
     "Medium": () => string;
     "Hard": () => string;
@@ -59,6 +61,13 @@ interface Translation {
     "Music": () => string;
     "The word was: {word}": (word: string) => string;
     "Close": () => string;
+    "Open settings": () => string;
+    "Close settings": () => string;
+    "Back": () => string;
+    "Oops!": () => string;
+    "Failed to load your game": () => string;
+    "Something went a little wobbly. Let's try starting the game again.": () => string;
+    "Reset the game": () => string;
 };
 
 export default Translation;

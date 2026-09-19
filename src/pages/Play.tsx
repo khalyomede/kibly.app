@@ -348,14 +348,14 @@ const App: Component = () => {
     const [resultDialogType, setResultDialogType] = createSignal<"won" | "lost" | "changed">("won");
     const [resultDialogHintsUsed, setResultDialogHintsUsed] = createSignal(0);
     const [currentDifficulty, setCurrentDifficulty] = createLocalSignal("easy", "difficulty", (data: any): Difficulty => difficulty.parse(data));
-    const [currentLang, setCurrentLang] = createLocalSignal("en", "lang", (data: any) => {
-        let savedLang = "en";
+    const [currentLang, setCurrentLang] = createLocalSignal("en", "lang", (rawStoredLang: any): Lang => {
+        let resolvedLang: Lang = "en";
 
         try {
-            savedLang = lang.parse(data);
-        } catch (error) { }
+            resolvedLang = lang.parse(rawStoredLang);
+        } catch { }
 
-        return savedLang as Lang;
+        return resolvedLang;
     });
     const [vibrationEnabled, setVibrationEnabled] = createLocalSignal(false, "vibrationEnabled", (data: any): boolean => z.boolean().parse(data));
     const [soundEnabled, setSoundEnabled] = createLocalSignal(false, "soundEnabled", (data: any): boolean => z.boolean().parse(data));
@@ -768,7 +768,7 @@ const App: Component = () => {
                     ref={closeSettingsElement}
                     type="button"
                     onClick={onClickCloseSettings}
-                    aria-label="Close settings"
+                    aria-label={t("Close settings")}
                     class="w-8 h-8 flex items-center justify-center rounded-xl text-slate-500 dark:text-sky-100 border-2 border-slate-200 dark:border-sky-700 hover:cursor-pointer"
                 >
                     <X width="18" height="18" />
@@ -811,7 +811,7 @@ const App: Component = () => {
             {/* Difficulty */}
             <div class="mb-6">
                 <div class="mb-2 text-xs uppercase tracking-widest text-slate-400 dark:text-sky-400">
-                    Difficulty
+                    {t('Difficulty')}
                 </div>
 
                 <div class="grid grid-cols-3 gap-2">
@@ -961,7 +961,7 @@ const App: Component = () => {
                         type="button"
                         ref={settingsElement}
                         onClick={onClickSettings}
-                        aria-label="Open settings"
+                        aria-label={t("Open settings")}
                         class="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl md:rounded-2xl border-2 border-slate-300 dark:border-sky-700 text-slate-600 dark:text-sky-200 bg-white/70 dark:bg-sky-800 md:w-11 md:h-11 hover:cursor-pointer z-3"
                     >
                         <Settings width="18" height="18" />
