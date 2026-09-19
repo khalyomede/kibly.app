@@ -118,7 +118,7 @@ const Rules: Component = () => {
                 <section>
                     <h2 class="text-2xl md:text-3xl text-slate-700 dark:text-sky-50 tracking-wide mb-3">{t("Possible words")}</h2>
                     <p class="text-slate-500 dark:text-sky-200 text-sm">
-                        {t("The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no singular and no plurals.")}
+                        {t("The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no adjectives and no plurals.")}
                     </p>
                 </section>
             </div>

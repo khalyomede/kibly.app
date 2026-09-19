@@ -236,7 +236,7 @@ const App: Component = () => {
             { element: "#grid-1", popover: { title: t("Wrong"), description: t("A letter that is not in the word to guess will appear dark.") } },
             { element: "#keyboard-O", disableActiveInteraction: true, popover: { title: t("Wrong letter"), description: t("The keyboard will show it in grey as well.") } },
             { element: "#grid-2", popover: { title: t("Misplaced"), description: t("A letter that is in the word but misplaced will appear in orange.") } },
-            { element: grid, popover: { title: t("A few rules to finish"), description: t("The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no singular and no plurals.") } },
+            { element: grid, popover: { title: t("A few rules to finish"), description: t("The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no adjectives and no plurals.") } },
             {
                 element: "#keyboard-HINT", disableActiveInteraction: true, popover: {
                     title: t("If you're stuck"), description: t("Click this button to have a letter guessed for you!"),

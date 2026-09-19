@@ -37,7 +37,7 @@ interface Translation {
     "Misplaced": () => string,
     "A letter that is in the word but misplaced will appear in orange.": () => string,
     "A few rules to finish": () => string,
-    "The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no singular and no plurals.": () => string,
+    "The list of words is composed only of nouns, without duplicate letters, no verbs, no accents, no adjectives and no plurals.": () => string,
     "If you're stuck": () => string,
     "Click this button to have a letter guessed for you!": () => string,
     "Wrong letter typed?": () => string,
