@@ -274,6 +274,13 @@ const App: Component = () => {
         driverObj = driver({
             showProgress: false,
             allowClose: false,
+            onPopoverRender: ({ nextButton }): void => {
+                requestAnimationFrame(() => {
+                    if (nextButton && document.activeElement !== nextButton) {
+                        nextButton.focus();
+                    }
+                });
+            },
             onDoneClick: () => {
                 setTutorialCompleted(true);
                 driverObj?.moveNext();
