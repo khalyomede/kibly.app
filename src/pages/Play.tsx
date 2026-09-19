@@ -64,8 +64,6 @@ const App: Component = () => {
         const randomIndex = Math.floor(numberBetween(0, (selectedWords.length - 1)));
         const nextRandomWord = selectedWords[randomIndex];
 
-        console.log(`word to guess in lang ${lang} and difficulty ${difficulty} will be ${nextRandomWord}`);
-
         return nextRandomWord;
     };
 
