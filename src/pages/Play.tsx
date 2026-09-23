@@ -1,5 +1,6 @@
 import { For, Index, Match, Show, Switch, createSignal, onCleanup, onMount, type Component } from 'solid-js';
 import { createLocalStore, createLocalSignal, numberBetween, createEmptyLetters, createKeyboardListener, createPrefersDarkTheme, prefersReducedMotion, vibrate } from "../helpers";
+import { createStore } from 'solid-js/store';
 import { RefreshCw, RefreshCcw, Delete, CheckCheck, Settings, X } from "lucide-solid";
 import { Logo, ToggleSwitch } from '../components';
 import { kiblyBackgroundMobilePng, kiblyBackgroundMobileDarkPng, kiblyBackgroundDesktopPng, kiblyBackgroundDesktopDarkPng, kiblyBackgroundMobileWebp, kiblyBackgroundMobileDarkWebp, kiblyBackgroundDesktopWebp, kiblyBackgroundDesktopDarkWebp } from "../images";
@@ -321,7 +322,23 @@ const App: Component = () => {
     };
 
     // Stores/signals
-    const [flippingTileIndices, setFlippingTileIndices] = createSignal<Set<number>>(new Set());
+    const [flippingTileIndices, setFlippingTileIndices] = createStore<Record<Lang, Record<Difficulty, Set<number>>>>({
+        "en": {
+            "easy": new Set<number>(),
+            "medium": new Set<number>(),
+            "hard": new Set<number>(),
+        },
+        "es": {
+            "easy": new Set<number>(),
+            "medium": new Set<number>(),
+            "hard": new Set<number>(),
+        },
+        "fr": {
+            "easy": new Set<number>(),
+            "medium": new Set<number>(),
+            "hard": new Set<number>(),
+        },
+    });
     const [lettersToGuess, setlettersToGuess] = createLocalStore<Record<Lang, Record<Difficulty, Array<Letter>>>>(
         {
             "en": {
@@ -540,7 +557,7 @@ const App: Component = () => {
                 const revealDelay = revealOrder * revealStepDurationInMilliseconds;
 
                 setTimeout((): void => {
-                    setFlippingTileIndices((previousIndices) => new Set(previousIndices).add(indexOfGuessedLetter));
+                    setFlippingTileIndices(lang, difficulty, (previousIndices) => new Set(previousIndices).add(indexOfGuessedLetter));
                 }, revealDelay);
 
                 setTimeout((): void => {
@@ -629,13 +646,26 @@ const App: Component = () => {
 
     createKeyboardListener(onKeyboardClick, settingsOpen);
 
+    const onGridTileAnimationEnd = (tileIndex: number): void => {
+        const lang: Lang = currentLang();
+        const difficulty: Difficulty = currentDifficulty();
+
+        setFlippingTileIndices(lang, difficulty, (previousIndices) => {
+            const nextFlippingTileIndices = new Set(previousIndices);
+
+            nextFlippingTileIndices.delete(tileIndex);
+
+            return nextFlippingTileIndices;
+        });
+    };
+
     const resetGame = (): void => {
         const lang: Lang = currentLang();
         const difficulty: Difficulty = currentDifficulty();
 
         setCurrentWordToGuess(lang, difficulty, randomWord(lang, difficulty));
         setlettersToGuess(lang, difficulty, createEmptyLetters(5 * getNumberOfLetters()));
-        setFlippingTileIndices(new Set<number>());
+        setFlippingTileIndices(lang, difficulty, new Set<number>());
         setNumberOfHintsUsed(lang, difficulty, 0);
     };
 
@@ -1001,39 +1031,56 @@ const App: Component = () => {
                             "grid-cols-7": currentDifficulty() === "hard"
                         }}>
                             <For each={lettersToGuess[currentLang()][currentDifficulty()]}>
-                                {(guessedLetter, tileIndex) => <span
-                                    style={{ "--entrance-delay": `${tileIndex() * 25}ms` }}
-                                    id={`grid-${tileIndex()}`}
-                                    classList={{
-                                        "aspect-square": true,
-                                        "border": true,
-                                        "rounded-3xl": currentDifficulty() !== "hard" && currentDifficulty() !== "medium",
-                                        "rounded-2xl": currentDifficulty() === "hard" || currentDifficulty() === "medium",
-                                        "lg:rounded-3xl": currentDifficulty() !== "hard",
-                                        "lg:rounded-2xl": currentDifficulty() === "hard",
-                                        "flex": true,
-                                        "items-center": true,
-                                        "justify-center": true,
-                                        "text-3xl": true,
-                                        "md:text-4xl": true,
-                                        "lg:text-2xl": true,
-                                        "text-slate-600": true,
-                                        "dark:text-sky-100": true,
-                                        "border-slate-500": true,
-                                        "dark:border-sky-600": true,
-                                        "border-2": true,
-                                        "letter-tile-appear": true,
-                                        "letter-tile-flip": flippingTileIndices().has(tileIndex()),
-                                        "bg-slate-50": ["to-guess", "guessed"].includes(guessedLetter.state),
-                                        "dark:bg-sky-800": ["to-guess", "guessed"].includes(guessedLetter.state),
-                                        "bg-amber-200": guessedLetter.state === "misplaced",
-                                        "dark:bg-amber-600": guessedLetter.state === "misplaced",
-                                        "bg-slate-400": guessedLetter.state === "bad",
-                                        "dark:bg-sky-900": guessedLetter.state === "bad",
-                                        "bg-green-200": guessedLetter.state === "good",
-                                        "dark:bg-green-600": guessedLetter.state === "good",
-                                    }}
-                                >{guessedLetter.value}</span>}
+                                {(guessedLetter, tileIndex) => {
+                                    const [entranceAnimationPending, setEntranceAnimationPending] = createSignal(true);
+
+                                    const onTileAnimationEnd = (animationEndEvent: AnimationEvent): void => {
+                                        if (animationEndEvent.animationName === "letter-tile-appear") {
+                                            setEntranceAnimationPending(false);
+
+                                            return;
+                                        }
+
+                                        if (animationEndEvent.animationName === "letter-tile-flip") {
+                                            onGridTileAnimationEnd(tileIndex());
+                                        }
+                                    };
+
+                                    return <span
+                                        style={{ "--entrance-delay": `${tileIndex() * 25}ms` }}
+                                        id={`grid-${tileIndex()}`}
+                                        onAnimationEnd={onTileAnimationEnd}
+                                        classList={{
+                                            "aspect-square": true,
+                                            "border": true,
+                                            "rounded-3xl": currentDifficulty() !== "hard" && currentDifficulty() !== "medium",
+                                            "rounded-2xl": currentDifficulty() === "hard" || currentDifficulty() === "medium",
+                                            "lg:rounded-3xl": currentDifficulty() !== "hard",
+                                            "lg:rounded-2xl": currentDifficulty() === "hard",
+                                            "flex": true,
+                                            "items-center": true,
+                                            "justify-center": true,
+                                            "text-3xl": true,
+                                            "md:text-4xl": true,
+                                            "lg:text-2xl": true,
+                                            "text-slate-600": true,
+                                            "dark:text-sky-100": true,
+                                            "border-slate-500": true,
+                                            "dark:border-sky-600": true,
+                                            "border-2": true,
+                                            "letter-tile-appear": entranceAnimationPending(),
+                                            "letter-tile-flip": flippingTileIndices[currentLang()][currentDifficulty()].has(tileIndex()),
+                                            "bg-slate-50": ["to-guess", "guessed"].includes(guessedLetter.state),
+                                            "dark:bg-sky-800": ["to-guess", "guessed"].includes(guessedLetter.state),
+                                            "bg-amber-200": guessedLetter.state === "misplaced",
+                                            "dark:bg-amber-600": guessedLetter.state === "misplaced",
+                                            "bg-slate-400": guessedLetter.state === "bad",
+                                            "dark:bg-sky-900": guessedLetter.state === "bad",
+                                            "bg-green-200": guessedLetter.state === "good",
+                                            "dark:bg-green-600": guessedLetter.state === "good",
+                                        }}
+                                    >{guessedLetter.value}</span>;
+                                }}
                             </For>
                         </div>
                     </div>
